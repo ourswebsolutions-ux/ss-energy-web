@@ -1,24 +1,19 @@
-'use client'
-import React from 'react';
-import Header from './components/Header';
-import Hero from './components/Hero';
-import CheckoutForm from './components/CheckoutForm';
-import TrustIndicators from './components/TrustIndicators';
-import About from './components/About';
-import FAQ from './components/FAQ';
-import Footer from './components/Footer';
+import Hero from "./components/Hero";
+import Categories from "./components/Categories";
+import InvertersSection from "./components/InvertersSection";
+import SolarPanelsSection from "./components/SolarPanelsSection";
+import BatteriesSection from "./components/BatteriesSection";
+import WhyShopWithUs from "./components/WhyShopWithUs";
 
-function App() {
+export default function Home() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50/30 to-slate-100">
-      <main>
-        <Hero />
-        <CheckoutForm />
-        <TrustIndicators />
-        
-      </main>
-    </div>
+    <main>
+      <Hero />
+      <Categories />
+      <SolarPanelsSection />
+      <InvertersSection />
+      <BatteriesSection />
+      <WhyShopWithUs />
+    </main>
   );
 }
-
-export default App;
