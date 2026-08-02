@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight, Zap, Star, Heart, Layers } from "lucide-react";
+import { ChevronLeft, ChevronRight, Zap, Layers } from "lucide-react";
+import { sendToWhatsApp } from "../../lib/whatsappUtils"; // 👈 Relative Path Fix
 
 // Solar & Tubular Battery Products Data with Category Tags
 const batteryProducts = [
@@ -112,9 +113,6 @@ export default function BatteriesSection() {
   // Active Category Filter ('all', 'lithium', 'tubular', 'dry_gel')
   const [activeCategory, setActiveCategory] = useState("all");
 
-  // Favorites State (Product IDs)
-  const [favorites, setFavorites] = useState([]);
-
   // Filter Products based on selected category
   const filteredProducts =
     activeCategory === "all"
@@ -159,16 +157,6 @@ export default function BatteriesSection() {
     }
   };
 
-  // Toggle Favorite Status
-  const toggleFavorite = (productId, e) => {
-    e.stopPropagation();
-    setFavorites((prev) =>
-      prev.includes(productId)
-        ? prev.filter((id) => id !== productId)
-        : [...prev, productId]
-    );
-  };
-
   // Category switch helper
   const handleSelectCategory = (catKey) => {
     setIsTransitioning(false);
@@ -211,7 +199,7 @@ export default function BatteriesSection() {
           {activeCategory !== "all" && (
             <button
               onClick={() => handleSelectCategory("all")}
-              className="text-xs font-semibold text-emerald-600 hover:underline flex items-center gap-1"
+              className="text-xs font-semibold text-emerald-600 hover:underline flex items-center gap-1 cursor-pointer"
             >
               <Layers size={14} /> Show All Products
             </button>
@@ -249,7 +237,7 @@ export default function BatteriesSection() {
             <button
               onClick={handlePrev}
               aria-label="Previous"
-              className="absolute left-2 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-white border border-gray-300 shadow-md flex items-center justify-center text-gray-700 hover:bg-gray-100 transition-all"
+              className="absolute left-2 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-white border border-gray-300 shadow-md flex items-center justify-center text-gray-700 hover:bg-gray-100 transition-all cursor-pointer"
             >
               <ChevronLeft size={20} />
             </button>
@@ -257,7 +245,7 @@ export default function BatteriesSection() {
             <button
               onClick={handleNext}
               aria-label="Next"
-              className="absolute right-2 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-white border border-gray-300 shadow-md flex items-center justify-center text-gray-700 hover:bg-gray-100 transition-all"
+              className="absolute right-2 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-white border border-gray-300 shadow-md flex items-center justify-center text-gray-700 hover:bg-gray-100 transition-all cursor-pointer"
             >
               <ChevronRight size={20} />
             </button>
@@ -272,79 +260,56 @@ export default function BatteriesSection() {
                   transform: `translateX(calc(-${currentIndex} * var(--battery-slide-step)))`,
                 }}
               >
-                {extendedProducts.map((product, index) => {
-                  const isFav = favorites.includes(product.id);
-                  return (
-                    <div
-                      key={`${product.id}-${index}`}
-                      className="w-full sm:w-1/2 md:w-1/3 flex-shrink-0 p-2"
-                    >
-                      <div className="h-full flex flex-col justify-between bg-white border border-gray-100 rounded-md p-2 hover:shadow-md transition-shadow relative">
-                        
-                        {/* CARD TOP BAR: Stars & Heart */}
-                        <div className="flex items-center justify-between mb-2">
-                          <div className="flex items-center gap-0.5">
-                            {Array.from({ length: 5 }).map((_, starIdx) => (
-                              <Star
-                                key={starIdx}
-                                size={12}
-                                className="text-amber-400 fill-amber-400"
-                              />
-                            ))}
+                {extendedProducts.map((product, index) => (
+                  <div
+                    key={`${product.id}-${index}`}
+                    className="w-full sm:w-1/2 md:w-1/3 flex-shrink-0 p-2"
+                  >
+                    <div className="h-full flex flex-col justify-between bg-white border border-gray-100 rounded-md p-2 hover:shadow-md transition-shadow relative">
+                      
+                      {/* Image */}
+                      <div className="relative w-full aspect-square bg-emerald-50/40 rounded mb-3 flex items-center justify-center">
+                        <Image
+                          src={product.image}
+                          alt={product.title}
+                          fill
+                          unoptimized
+                          className="object-contain p-2 hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+
+                      {/* Info & WhatsApp Action */}
+                      <div className="flex flex-col flex-grow justify-between">
+                        <div>
+                          <h3 className="text-xs font-medium text-gray-800 line-clamp-2 leading-snug mb-2 min-h-[32px]">
+                            {product.title}
+                          </h3>
+
+                          <div className="flex items-baseline gap-1.5 flex-wrap mb-1">
+                            <span className="text-[11px] text-gray-400 line-through">
+                              {product.originalPrice}
+                            </span>
+                            <span className="text-xs font-bold text-emerald-700">
+                              {product.discountedPrice}
+                            </span>
                           </div>
 
-                          <button
-                            onClick={(e) => toggleFavorite(product.id, e)}
-                            className="p-1 text-gray-400 hover:text-red-500 transition-colors"
-                            aria-label="Favorite"
-                          >
-                            <Heart
-                              size={16}
-                              className={isFav ? "text-red-500 fill-red-500" : "text-gray-400"}
-                            />
-                          </button>
-                        </div>
-
-                        {/* Image */}
-                        <div className="relative w-full aspect-square bg-emerald-50/40 rounded mb-3 flex items-center justify-center">
-                          <Image
-                            src={product.image}
-                            alt={product.title}
-                            fill
-                            unoptimized
-                            className="object-contain p-2 hover:scale-105 transition-transform duration-300"
-                          />
-                        </div>
-
-                        {/* Info */}
-                        <div className="flex flex-col flex-grow justify-between">
-                          <div>
-                            <h3 className="text-xs font-medium text-gray-800 line-clamp-2 leading-snug mb-2 min-h-[32px]">
-                              {product.title}
-                            </h3>
-
-                            <div className="flex items-baseline gap-1.5 flex-wrap mb-1">
-                              <span className="text-[11px] text-gray-400 line-through">
-                                {product.originalPrice}
-                              </span>
-                              <span className="text-xs font-bold text-emerald-700">
-                                {product.discountedPrice}
-                              </span>
-                            </div>
-
-                            <div className="inline-block bg-emerald-600 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded mb-3">
-                              {product.savings}
-                            </div>
+                          <div className="inline-block bg-emerald-600 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded mb-3">
+                            {product.savings}
                           </div>
-
-                          <button className="w-full py-1.5 px-3 rounded-full border border-emerald-900 text-emerald-900 font-medium text-xs hover:bg-emerald-900 hover:text-white transition-colors duration-200">
-                            {product.buttonText}
-                          </button>
                         </div>
+
+                        {/* 🚀 WhatsApp Trigger */}
+                        <button
+                          onClick={() => sendToWhatsApp(product)}
+                          className="w-full py-1.5 px-3 rounded-full border border-emerald-900 text-emerald-900 font-medium text-xs hover:bg-emerald-900 hover:text-white transition-colors duration-200 cursor-pointer"
+                        >
+                          {product.buttonText}
+                        </button>
                       </div>
                     </div>
-                  );
-                })}
+                  </div>
+                ))}
               </div>
             </div>
           </div>
@@ -393,12 +358,12 @@ export default function BatteriesSection() {
               })}
             </div>
 
-            {/* View All Button - Switches to ALL items in Slider */}
+            {/* View All Button */}
             <div
               onClick={() => handleSelectCategory("all")}
               className={`rounded-xl p-4 flex items-center justify-center shadow-sm border cursor-pointer transition-all ${
                 activeCategory === "all"
-                  ? "bg-emerald-50 border-emerald-500 font-bold text-emerald-700"
+                  ? "bg-emerald-50 border-emerald-500 font-bold text-emerald-700 shadow-md"
                   : "bg-white text-gray-700 border-gray-100 hover:bg-gray-50"
               }`}
             >
@@ -421,9 +386,10 @@ export default function BatteriesSection() {
                 <h3 className="text-lg sm:text-xl font-bold leading-tight mb-4">
                   {banner.title}
                 </h3>
+                {/* 🚀 Banner WhatsApp Trigger */}
                 <button
-                  onClick={() => handleSelectCategory(banner.categoryKey)}
-                  className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white text-xs font-medium px-4 py-1.5 rounded-full transition-colors inline-flex items-center gap-1"
+                  onClick={() => sendToWhatsApp({ title: banner.title, category: banner.categoryKey })}
+                  className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white text-xs font-medium px-4 py-1.5 rounded-full transition-colors inline-flex items-center gap-1 cursor-pointer"
                 >
                   Shop Now
                 </button>
