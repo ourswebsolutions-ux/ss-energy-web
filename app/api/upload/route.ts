@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-// import cloudinary from "@/lib/cloudinary";
-import cloudinary from "../../../lib/cloudinary";
+import cloudinary from "../../../lib/cloudinary"; // Ya relative path: "../../../lib/cloudinary"
+
 export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
@@ -13,18 +13,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    // 1. File ko Buffer aur phir Base64 String me convert karein
+    const arrayBuffer = await file.arrayBuffer();
+    const buffer = Buffer.from(arrayBuffer);
+    const base64Image = `data:${file.type};base64,${buffer.toString("base64")}`;
 
-    const upload = await new Promise<any>((resolve, reject) => {
-      const stream = cloudinary.uploader.upload_stream(
-        { folder: "energy-products" },
-        (error, result) => {
-          if (error) reject(error);
-          else resolve(result);
-        }
-      );
-      stream.end(buffer);
+    // 2. Direct Base64 String Upload (Ye stream timeout nahi karta)
+    const upload = await cloudinary.uploader.upload(base64Image, {
+      folder: "energy-products",
+      resource_type: "auto",
     });
 
     return NextResponse.json({

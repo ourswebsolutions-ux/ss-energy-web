@@ -1,6 +1,16 @@
 import { NextResponse } from "next/server";
+<<<<<<< HEAD
 import { prisma } from "../../../lib/prisma";
 
+=======
+// Import the instantiated `prisma` client using Next.js path alias:
+// import { prisma } from "@/lib/prisma";
+
+// If you prefer relative paths based on your folder structure, use:
+import { prisma } from "../../../lib/prisma";
+
+// GET Products
+>>>>>>> ebfd850 (updated)
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
@@ -13,18 +23,15 @@ export async function GET(request: Request) {
       },
     });
 
-    return NextResponse.json(products);
+    return NextResponse.json({
+      success: true,
+      data: products,
+    });
   } catch (err) {
-    console.error(err);
-
+    console.error("GET Error:", err);
     return NextResponse.json(
-      {
-        success: false,
-        message: "Failed to fetch products",
-      },
-      {
-        status: 500,
-      }
+      { success: false, error: "Failed to fetch products" },
+      { status: 500 }
     );
   }
 }
@@ -52,18 +59,15 @@ export async function POST(request: Request) {
       },
     });
 
-    return NextResponse.json(product);
+    return NextResponse.json({
+      success: true,
+      data: product,
+    });
   } catch (err) {
-    console.error(err);
-
+    console.error("POST Error:", err);
     return NextResponse.json(
-      {
-        success: false,
-        message: "Failed to create product",
-      },
-      {
-        status: 500,
-      }
+      { success: false, error: "Failed to create product" },
+      { status: 500 }
     );
   }
 }
@@ -72,41 +76,27 @@ export async function POST(request: Request) {
 export async function DELETE(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-
     const id = searchParams.get("id");
 
     if (!id) {
       return NextResponse.json(
-        {
-          success: false,
-          message: "Product id required",
-        },
-        {
-          status: 400,
-        }
+        { success: false, error: "Product ID required" },
+        { status: 400 }
       );
     }
 
     await prisma.product.delete({
       where: {
-        id,
+        id: parseInt(id, 10), // Converts query string ID to Integer required by Prisma
       },
     });
 
-    return NextResponse.json({
-      success: true,
-    });
+    return NextResponse.json({ success: true });
   } catch (err) {
-    console.error(err);
-
+    console.error("DELETE Error:", err);
     return NextResponse.json(
-      {
-        success: false,
-        message: "Delete failed",
-      },
-      {
-        status: 500,
-      }
+      { success: false, error: "Delete failed" },
+      { status: 500 }
     );
   }
 }
