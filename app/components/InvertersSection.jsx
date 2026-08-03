@@ -1,144 +1,105 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight, Zap } from "lucide-react";
-import { sendToWhatsApp } from "../../lib/whatsappUtils"; // 👈 Relative Path Fix
-
-// Main Slider Products Data with Category Tags
-const inverterProducts = [
-  {
-    id: 1,
-    title: "GoodWe ES Uniq GW8000M-ES-C10 8kw Hybrid Solar Inverter...",
-    originalPrice: "Rs.340,000.00",
-    discountedPrice: "Rs.310,000.00",
-    savings: "Save Rs.30,000.00",
-    image: "/inverter1.png",
-    buttonText: "Pre-Order",
-    category: "2.5-10kw",
-    type: "hybrid",
-  },
-  {
-    id: 2,
-    title: "Inverex Nitrox 10KW - 48V Hybrid Solar Inverter (Single Phase) PV...",
-    originalPrice: "Rs.529,000.00",
-    discountedPrice: "Rs.465,000.00",
-    savings: "Save Rs.64,000.00",
-    image: "/inverter2.png",
-    buttonText: "Add To Cart",
-    category: "ip65",
-    type: "hybrid",
-  },
-  {
-    id: 3,
-    title: "PRIMAX NEXA PSE-DUAL-8KW - HYBRID SOLAR INVERTER",
-    originalPrice: "Rs.425,000.00",
-    discountedPrice: "Rs.310,000.00",
-    savings: "Save Rs.115,000.00",
-    image: "/inverter3.png",
-    buttonText: "Add To Cart",
-    category: "2.5-10kw",
-    type: "hybrid",
-  },
-  {
-    id: 4,
-    title: "Crown Elego 3.2KW 24V MPPT Solar Inverter Dual Output",
-    originalPrice: "Rs.135,000.00",
-    discountedPrice: "Rs.118,500.00",
-    savings: "Save Rs.16,500.00",
-    image: "/inverter4.png",
-    buttonText: "Add To Cart",
-    category: "2.5-10kw",
-    type: "offgrid",
-  },
-  {
-    id: 5,
-    title: "Fronus Platinum 6.2KW Hybrid Dual Output MPPT Solar Inverter",
-    originalPrice: "Rs.185,000.00",
-    discountedPrice: "Rs.162,000.00",
-    savings: "Save Rs.23,000.00",
-    image: "/inverter5.png",
-    buttonText: "Add To Cart",
-    category: "2.5-10kw",
-    type: "ongrid",
-  },
-  {
-    id: 6,
-    title: "Inverex Aerox 1.2KW 12V Solar Inverter UPS",
-    originalPrice: "Rs.65,000.00",
-    discountedPrice: "Rs.58,000.00",
-    savings: "Save Rs.7,000.00",
-    image: "/inverter1.png",
-    buttonText: "Add To Cart",
-    category: "1-2kw",
-    type: "offgrid",
-  },
-];
+import { ChevronLeft, ChevronRight, Zap, Layers, ShoppingBag, ShieldCheck } from "lucide-react";
+import { sendToWhatsApp } from "../../lib/whatsappUtils";
 
 // Right Side Mini Sub-Categories
 const rightCategories = [
-  {
-    id: 1,
-    key: "1-2kw",
-    title: "Solar Inverter 1-2Kw",
-    image: "/inverter-thumb1.png",
-  },
-  {
-    id: 2,
-    key: "2.5-10kw",
-    title: "Solar Inverter 2.5-10Kw",
-    image: "/inverter-thumb2.png",
-  },
-  {
-    id: 3,
-    key: "ip65",
-    title: "IP 65 Hybrid Inverters",
-    image: "/inverter-thumb3.png",
-  },
+  { id: 1, key: "hybrid", title: "Hybrid Inverters", image: "/inverter-thumb1.png" },
+  { id: 2, key: "off_grid", title: "Off-Grid Inverters", image: "/inverter-thumb2.png" },
+  { id: 3, key: "on_grid", title: "On-Grid Inverters", image: "/inverter-thumb3.png" },
 ];
 
 // Bottom 3 Promo Banners
 const bottomBanners = [
   {
     id: 1,
-    key: "offgrid",
     title: "Off Grid Inverters",
     image: "/banner-offgrid.png",
+    gradient: "from-[#ff5252] via-[#ff6b6b] to-[#ff7a59]",
+    categoryKey: "off_grid",
   },
   {
     id: 2,
-    key: "hybrid",
     title: "Hybrid Inverters",
     image: "/banner-hybrid.png",
+    gradient: "from-[#e11d48] via-[#f43f5e] to-[#fb7185]",
+    categoryKey: "hybrid",
   },
   {
     id: 3,
-    key: "ongrid",
     title: "On Grid Inverters",
     image: "/banner-ongrid.png",
+    gradient: "from-[#be123c] via-[#e11d48] to-[#f43f5e]",
+    categoryKey: "on_grid",
   },
 ];
 
 export default function InvertersSection() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(true);
-
-  // Filter State ('all', '1-2kw', '2.5-10kw', 'ip65', 'offgrid', 'hybrid', 'ongrid')
   const [activeCategory, setActiveCategory] = useState("all");
 
-  // Filter products based on selected category or show ALL cards
-  const filteredProducts =
-    activeCategory === "all"
-      ? inverterProducts
-      : inverterProducts.filter(
-          (p) => p.category === activeCategory || p.type === activeCategory
-        );
-
-  // Extended array for smooth infinite slider loop
-  const extendedProducts = [...filteredProducts, ...filteredProducts];
-
-  // Auto-Slide 10 Seconds
+  // Fetch Inverter Products from Database ('inverters')
   useEffect(() => {
+    async function fetchInverters() {
+      try {
+        setLoading(true);
+        const res = await fetch("/api/products?section=inverters");
+        const json = await res.json();
+
+        if (json.success && Array.isArray(json.data)) {
+          setProducts(json.data);
+        } else if (Array.isArray(json)) {
+          setProducts(json);
+        } else {
+          setProducts([]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch inverter products:", error);
+        setProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    fetchInverters();
+  }, []);
+
+  // Filter products based on selected category accurately
+  const filteredProducts = useMemo(() => {
+    if (activeCategory === "all") return products;
+    return products.filter((p) => {
+      const cat = (p.category || "").toLowerCase();
+      const sec = (p.section || p.targetSection || "").toLowerCase();
+      const type = (p.type || "").toLowerCase();
+      const matchKey = activeCategory.toLowerCase();
+
+      return cat.includes(matchKey) || sec.includes(matchKey) || type.includes(matchKey);
+    });
+  }, [products, activeCategory]);
+
+  // Extended array for smooth infinite slider loop (Matching Solar Panels logic)
+ // Extended array for smooth infinite slider loop
+// صرف تب ڈپلیکیٹ کریں جب پروڈکٹس 3 سے زیادہ ہوں (کیونکہ ایک وقت میں 3 کارڈ دکھتے ہیں)
+const extendedProducts = useMemo(() => {
+  if (filteredProducts.length === 0) return [];
+  
+  // اگر 3 یا اس سے کم پروڈکٹس ہیں تو ڈپلیکیٹ نہ کریں
+  if (filteredProducts.length <= 3) {
+    return filteredProducts;
+  }
+  
+  return [...filteredProducts, ...filteredProducts];
+}, [filteredProducts]);
+
+  // Auto-Slide Timer (10 Seconds)
+  useEffect(() => {
+    if (filteredProducts.length === 0) return;
     const timer = setInterval(() => {
       handleNext();
     }, 10000);
@@ -172,7 +133,7 @@ export default function InvertersSection() {
     }
   };
 
-  // Category Selection Handler (Reset to index 0 on change)
+  // Category Selection Handler
   const handleSelectCategory = (catKey) => {
     setIsTransitioning(false);
     setActiveCategory(catKey);
@@ -183,16 +144,16 @@ export default function InvertersSection() {
   };
 
   return (
-    <section className="w-full pt-6 pb-8 px-4 lg:px-8 bg-gray-100 overflow-hidden select-none">
+    <section className="w-full pt-6 pb-8 px-4 lg:px-8 bg-white overflow-hidden select-none">
       <div className="mx-auto max-w-[1600px]">
 
-        {/* 1. Top "Special Discount" Infinite Marquee */}
+        {/* 1. Top Marquee */}
         <div className="w-full overflow-hidden pb-4 mb-4">
           <div className="flex w-max gap-8 animate-discount-marquee items-center text-gray-800 text-sm font-semibold">
             {Array.from({ length: 12 }).map((_, i) => (
               <div key={i} className="flex items-center gap-3 flex-shrink-0">
-                <span>Special Discount</span>
-                <Zap className="w-4 h-4 text-black fill-black" />
+                <span>Solar Inverter Special Deals</span>
+                <Zap className="w-4 h-4 text-red-600 fill-red-600" />
               </div>
             ))}
           </div>
@@ -200,35 +161,43 @@ export default function InvertersSection() {
 
         {/* 2. Header Title */}
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
-            Solar Inverters
-          </h2>
+          <div className="flex items-center gap-3">
+            <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
+              Inverters
+            </h2>
+            {activeCategory !== "all" && (
+              <span className="text-xs bg-red-100 text-red-800 font-semibold px-2.5 py-0.5 rounded-full capitalize">
+                {activeCategory.replace("_", " ")}
+              </span>
+            )}
+          </div>
+
           {activeCategory !== "all" && (
             <button
               onClick={() => handleSelectCategory("all")}
-              className="text-xs font-semibold text-red-600 hover:underline cursor-pointer"
+              className="text-xs font-semibold text-red-600 hover:underline cursor-pointer flex items-center gap-1"
             >
-              Show All Inverters
+              <Layers size={14} /> Show All Inverters
             </button>
           )}
         </div>
 
-        {/* 3. Top Main Section Layout */}
+        {/* 3. Main Section Layout */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-6">
           
           {/* Left Large Promo Banner */}
-          <div className="lg:col-span-3 bg-gradient-to-b from-[#ff6b6b] via-[#ff5252] to-[#ff758c] rounded-xl p-6 flex flex-col justify-between text-white min-h-[380px] shadow-sm">
+          <div className="lg:col-span-3 bg-gradient-to-b from-[#ff6b6b] via-[#ff5252] to-[#ff758c] rounded-xl p-6 flex flex-col justify-between text-white min-h-[420px] shadow-sm">
             <div>
-              <p className="uppercase text-xs tracking-wider font-semibold opacity-90 mb-1">
+              <p className="uppercase text-xs tracking-wider font-semibold opacity-90 mb-1 text-red-100">
                 SOLAR INVERTERS
               </p>
               <h3 className="text-2xl sm:text-3xl font-black leading-tight tracking-wide text-yellow-300 drop-shadow">
                 BEST PRICES
               </h3>
-              <p className="text-sm mt-3 opacity-90">Exclusive deals</p>
+              <p className="text-sm mt-3 opacity-90">Exclusive deals & warranties</p>
             </div>
             
-            <div className="relative w-full h-44 mt-4">
+            <div className="relative w-full h-48 mt-4">
               <Image
                 src="/promo-inverters.png"
                 alt="Solar Inverters Promo"
@@ -239,95 +208,157 @@ export default function InvertersSection() {
             </div>
           </div>
 
-          {/* Middle Cards Slider */}
-          <div className="lg:col-span-6 relative bg-white rounded-xl p-2 sm:p-3 shadow-sm border border-gray-100 overflow-hidden">
+          {/* Middle Dynamic Cards Slider */}
+          <div className="lg:col-span-6 relative bg-white rounded-xl p-2 sm:p-3 shadow-xs border border-gray-100 min-h-[420px] flex flex-col justify-center">
             
-            {/* Navigation Buttons */}
-            <button
-              onClick={handlePrev}
-              aria-label="Previous"
-              className="absolute left-2 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-white border border-gray-300 shadow-md flex items-center justify-center text-gray-700 hover:bg-gray-100 transition-all cursor-pointer"
-            >
-              <ChevronLeft size={20} />
-            </button>
+            {loading ? (
+              <div className="text-center py-12 text-sm text-gray-500 font-medium">
+                Loading inverters from database...
+              </div>
+            ) : filteredProducts.length === 0 ? (
+              <div className="text-center py-12 text-sm text-gray-500 font-medium">
+                No inverter products found for this category.
+              </div>
+            ) : (
+              <div className="relative w-full overflow-hidden">
+                
+                {/* Navigation Buttons */}
+                <button
+                  onClick={handlePrev}
+                  aria-label="Previous"
+                  className="absolute left-1 top-1/2 -translate-y-1/2 z-30 w-9 h-9 rounded-full bg-white/95 border border-gray-200 shadow-md flex items-center justify-center text-gray-700 hover:bg-white hover:scale-110 transition-all cursor-pointer"
+                >
+                  <ChevronLeft size={20} />
+                </button>
 
-            <button
-              onClick={handleNext}
-              aria-label="Next"
-              className="absolute right-2 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-white border border-gray-300 shadow-md flex items-center justify-center text-gray-700 hover:bg-gray-100 transition-all cursor-pointer"
-            >
-              <ChevronRight size={20} />
-            </button>
+                <button
+                  onClick={handleNext}
+                  aria-label="Next"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 z-30 w-9 h-9 rounded-full bg-white/95 border border-gray-200 shadow-md flex items-center justify-center text-gray-700 hover:bg-white hover:scale-110 transition-all cursor-pointer"
+                >
+                  <ChevronRight size={20} />
+                </button>
 
-            {/* Slide Track */}
-            <div className="overflow-hidden h-full">
-              <div
-                onTransitionEnd={handleTransitionEnd}
-                className={`flex h-full ${
-                  isTransitioning ? "transition-transform duration-500 ease-in-out" : ""
-                }`}
-                style={{
-                  transform: `translateX(calc(-${currentIndex} * var(--main-slide-step)))`,
-                }}
-              >
-                {extendedProducts.map((product, index) => (
+                {/* Sliding Viewport Track */}
+                <div className="w-full overflow-hidden px-1">
                   <div
-                    key={`${product.id}-${index}`}
-                    className="w-full sm:w-1/2 md:w-1/3 flex-shrink-0 p-2"
+                    onTransitionEnd={handleTransitionEnd}
+                    className={`flex ${
+                      isTransitioning ? "transition-transform duration-500 ease-in-out" : ""
+                    }`}
+                    style={{
+                      transform: `translateX(-${currentIndex * (100 / 3)}%)`,
+                    }}
                   >
-                    <div className="h-full flex flex-col justify-between bg-white rounded-md p-2 hover:shadow-md transition-shadow relative">
-                      
-                      {/* Image */}
-                      <div className="relative w-full aspect-square bg-gray-50 rounded mb-3 flex items-center justify-center">
-                        <Image
-                          src={product.image}
-                          alt={product.title}
-                          fill
-                          unoptimized
-                          className="object-contain p-2 hover:scale-105 transition-transform duration-300"
-                        />
-                      </div>
+                    {extendedProducts.map((product, idx) => {
+                      const orig = parseFloat(product.originalPrice || product.oldPrice) || 0;
+                      const disc = parseFloat(product.discountedPrice || product.price) || 0;
+                      const savings = orig > disc ? orig - disc : null;
 
-                      {/* Info & WhatsApp Action */}
-                      <div className="flex flex-col flex-grow justify-between">
-                        <div>
-                          <h3 className="text-xs font-medium text-gray-800 line-clamp-2 leading-snug mb-2 min-h-[32px]">
-                            {product.title}
-                          </h3>
+                      return (
+                        <div
+                          key={`${product.id || product._id || "inverter"}-${idx}`}
+                          className="w-full sm:w-1/2 lg:w-1/3 flex-shrink-0 px-1.5"
+                        >
+                          {/* Card UI */}
+                          <div className="bg-white border border-gray-200 rounded-2xl p-3 flex flex-col justify-between h-full shadow-xs hover:shadow-md transition-shadow relative">
+                            
+                            <div>
+                              {/* Image Box */}
+                              <div className="relative w-full h-44 bg-[#f8fafc] rounded-xl overflow-hidden mb-3 flex items-center justify-center">
+                                {product.badge && (
+                                  <span className="absolute top-2 left-2 z-10 bg-red-600 text-white text-[10px] font-black uppercase px-2.5 py-1 rounded-full tracking-wide">
+                                    {product.badge}
+                                  </span>
+                                )}
 
-                          <div className="flex items-baseline gap-1.5 flex-wrap mb-1">
-                            <span className="text-[11px] text-gray-400 line-through">
-                              {product.originalPrice}
-                            </span>
-                            <span className="text-xs font-bold text-red-600">
-                              {product.discountedPrice}
-                            </span>
-                          </div>
+                                <Image
+                                  src={product.image || product.imageUrl || "/inverter1.png"}
+                                  alt={product.title || product.name || "Inverter"}
+                                  fill
+                                  unoptimized
+                                  className="object-contain p-2 hover:scale-105 transition-transform duration-300"
+                                />
+                              </div>
 
-                          <div className="inline-block bg-red-600 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded mb-3">
-                            {product.savings}
+                              {/* Category Tag */}
+                              {(product.categoryPill || product.category || product.tag) && (
+                                <div className="mb-1.5">
+                                  <span className="inline-block bg-[#f1f5f9] text-[#64748b] text-[11px] font-semibold px-2.5 py-0.5 rounded-md">
+                                    {product.categoryPill || product.category || product.tag}
+                                  </span>
+                                </div>
+                              )}
+
+                              {/* Title */}
+                              <h3 className="text-sm font-bold text-gray-900 line-clamp-1 mb-0.5">
+                                {product.title || product.name || "Product Title"}
+                              </h3>
+
+                              {/* Description */}
+                              {product.description && (
+                                <p className="text-[12px] text-gray-500 line-clamp-1 mb-2">
+                                  {product.description}
+                                </p>
+                              )}
+
+                              {/* Specs Badge */}
+                              {(product.specifications || product.warranty) && (
+                                <div className="mb-3">
+                                  <span className="inline-flex items-center gap-1 bg-[#fffbeb] border border-[#fde68a] text-[#b45309] text-[11px] font-medium px-2 py-0.5 rounded-md">
+                                    <ShieldCheck size={12} className="text-[#d97706]" />
+                                    <span className="truncate">
+                                      {product.specifications || product.warranty}
+                                    </span>
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+
+                            <div>
+                              {/* Price */}
+                              <div className="flex items-baseline gap-2 mb-0.5">
+                                {orig > 0 && (
+                                  <span className="text-xs text-gray-400 line-through font-medium">
+                                    {orig}
+                                  </span>
+                                )}
+                                <span className="text-base font-extrabold text-gray-900">
+                                  {disc || product.price || "N/A"}
+                                </span>
+                              </div>
+
+                              {/* Save Amount */}
+                              {savings && (
+                                <p className="text-[11px] font-bold text-red-600 mb-3">
+                                  Save Rs.{savings}
+                                </p>
+                              )}
+
+                              {/* Action Button */}
+                              <button
+                                onClick={() => sendToWhatsApp(product)}
+                                className="w-full bg-red-600 hover:bg-red-700 text-white text-xs font-bold py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+                              >
+                                <ShoppingBag size={14} />
+                                <span>{product.buttonText || "Buy Now"}</span>
+                              </button>
+                            </div>
+
                           </div>
                         </div>
-
-                        {/* 🚀 Global WhatsApp Direct Function Call */}
-                        <button
-                          onClick={() => sendToWhatsApp(product)}
-                          className="w-full py-1.5 px-3 rounded-full border border-gray-800 text-gray-900 font-medium text-xs hover:bg-gray-900 hover:text-white transition-colors duration-200 cursor-pointer"
-                        >
-                          {product.buttonText}
-                        </button>
-                      </div>
-                    </div>
+                      );
+                    })}
                   </div>
-                ))}
+                </div>
+
               </div>
-            </div>
+            )}
 
           </div>
 
           {/* Right Column Sub-Categories List */}
           <div className="lg:col-span-3 flex flex-col justify-between gap-3">
-            
             <div className="flex flex-col gap-3">
               {rightCategories.map((cat) => {
                 const isActive = activeCategory === cat.key;
@@ -335,10 +366,10 @@ export default function InvertersSection() {
                   <div
                     key={cat.id}
                     onClick={() => handleSelectCategory(cat.key)}
-                    className={`rounded-xl p-4 flex items-center justify-between shadow-sm border transition-all cursor-pointer group ${
+                    className={`rounded-xl p-4 flex items-center justify-between shadow-xs border transition-all cursor-pointer group ${
                       isActive
-                        ? "bg-red-50/80 border-red-400 shadow-md"
-                        : "bg-white border-gray-100 hover:shadow-md"
+                        ? "bg-red-50/80 border-red-500 shadow-sm"
+                        : "bg-white border-gray-100 hover:shadow-xs"
                     }`}
                   >
                     <div>
@@ -346,7 +377,7 @@ export default function InvertersSection() {
                         className={`text-sm font-bold transition-colors ${
                           isActive
                             ? "text-red-600"
-                            : "text-gray-900 group-hover:text-[#ff6b6b]"
+                            : "text-gray-900 group-hover:text-red-600"
                         }`}
                       >
                         {cat.title}
@@ -373,14 +404,14 @@ export default function InvertersSection() {
             {/* View All Categories Button */}
             <div
               onClick={() => handleSelectCategory("all")}
-              className={`rounded-xl p-4 flex items-center justify-center shadow-sm border cursor-pointer transition-colors ${
+              className={`rounded-xl p-4 flex items-center justify-center shadow-xs border cursor-pointer transition-colors ${
                 activeCategory === "all"
-                  ? "bg-red-600 text-white border-red-600 shadow-md"
+                  ? "bg-red-600 text-white border-red-600 shadow-sm"
                   : "bg-white text-gray-700 border-gray-100 hover:bg-gray-50"
               }`}
             >
               <span className="text-xs font-semibold">
-                View all categories
+                View all inverter categories
               </span>
             </div>
 
@@ -393,15 +424,19 @@ export default function InvertersSection() {
           {bottomBanners.map((banner) => (
             <div
               key={banner.id}
-              className="relative overflow-hidden bg-gradient-to-r from-[#ff5252] via-[#ff6b6b] to-[#ff7a59] rounded-xl p-5 sm:p-6 text-white flex items-center justify-between min-h-[140px] shadow-sm hover:shadow-md transition-shadow"
+              className={`relative overflow-hidden bg-gradient-to-r ${banner.gradient} rounded-xl p-5 sm:p-6 text-white flex items-center justify-between min-h-[140px] shadow-xs hover:shadow-sm transition-shadow`}
             >
               <div className="z-10 max-w-[60%]">
                 <h3 className="text-lg sm:text-xl font-bold leading-tight mb-4">
                   {banner.title}
                 </h3>
-                {/* 🚀 Global WhatsApp Function Call for Banner */}
                 <button
-                  onClick={() => sendToWhatsApp({ title: banner.title, category: banner.key })}
+                  onClick={() =>
+                    sendToWhatsApp({
+                      title: banner.title,
+                      category: banner.categoryKey,
+                    })
+                  }
                   className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white text-xs font-medium px-4 py-1.5 rounded-full transition-colors inline-flex items-center gap-1 cursor-pointer"
                 >
                   Shop Now
@@ -422,38 +457,6 @@ export default function InvertersSection() {
         </div>
 
       </div>
-
-      {/* Dynamic slide step & Marquee animation */}
-      <style jsx global>{`
-        :root {
-          --main-slide-step: 100%;
-        }
-        @media (min-width: 640px) {
-          :root {
-            --main-slide-step: 50%;
-          }
-        }
-        @media (min-width: 768px) {
-          :root {
-            --main-slide-step: 33.333%;
-          }
-        }
-
-        @keyframes discountMarquee {
-          0% {
-            transform: translateX(0%);
-          }
-          100% {
-            transform: translateX(-50%);
-          }
-        }
-        .animate-discount-marquee {
-          animation: discountMarquee 20s linear infinite;
-        }
-        .animate-discount-marquee:hover {
-          animation-play-state: paused;
-        }
-      `}</style>
     </section>
   );
 }

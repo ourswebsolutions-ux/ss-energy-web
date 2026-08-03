@@ -1,133 +1,86 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Image from "next/image";
-import { ChevronLeft, ChevronRight, Zap, Layers } from "lucide-react";
-import { sendToWhatsApp } from "../../lib/whatsappUtils"; // 👈 Relative Path Fix
+import { ChevronLeft, ChevronRight, Zap, Layers, ShoppingBag, ShieldCheck } from "lucide-react";
+import { sendToWhatsApp } from "../../lib/whatsappUtils";
 
-// Solar & Tubular Battery Products Data with Category Tags
-const batteryProducts = [
-  {
-    id: 1,
-    title: "Narada 48V 100Ah 4.8kWh Lithium-ion Battery Pack (LifePO4)",
-    originalPrice: "Rs.385,000.00",
-    discountedPrice: "Rs.345,000.00",
-    savings: "Save Rs.40,000.00",
-    image: "/battery1.png",
-    buttonText: "Pre-Order",
-    category: "lithium",
-  },
-  {
-    id: 2,
-    title: "Phoenix Tall Tubular Battery TX-2500 (230Ah) Solar Deep Cycle",
-    originalPrice: "Rs.68,000.00",
-    discountedPrice: "Rs.58,500.00",
-    savings: "Save Rs.9,500.00",
-    image: "/battery2.png",
-    buttonText: "Add To Cart",
-    category: "tubular",
-  },
-  {
-    id: 3,
-    title: "AGS Tubular Battery IT-1800 Heavy Duty Deep Cycle Solar",
-    originalPrice: "Rs.56,000.00",
-    discountedPrice: "Rs.48,000.00",
-    savings: "Save Rs.8,000.00",
-    image: "/battery3.png",
-    buttonText: "Add To Cart",
-    category: "tubular",
-  },
-  {
-    id: 4,
-    title: "OSAKA Tubular Battery DL-2000 Super Deep Cycle Battery",
-    originalPrice: "Rs.62,000.00",
-    discountedPrice: "Rs.53,500.00",
-    savings: "Save Rs.8,500.00",
-    image: "/battery4.png",
-    buttonText: "Add To Cart",
-    category: "dry_gel",
-  },
-  {
-    id: 5,
-    title: "Inverex PowerWall 5.12kWh 100Ah Lithium Phosphate Battery",
-    originalPrice: "Rs.410,000.00",
-    discountedPrice: "Rs.365,000.00",
-    savings: "Save Rs.45,000.00",
-    image: "/battery5.png",
-    buttonText: "Add To Cart",
-    category: "lithium",
-  },
-];
-
-// Right Side Mini Sub-Categories
+// Right Side Sub-Categories
 const rightCategories = [
-  {
-    id: 1,
-    key: "lithium",
-    title: "Lithium-ion Batteries (48V)",
-    image: "/battery-thumb1.png",
-  },
-  {
-    id: 2,
-    key: "tubular",
-    title: "Tall Tubular Deep Cycle",
-    image: "/battery-thumb2.png",
-  },
-  {
-    id: 3,
-    key: "dry_gel",
-    title: "Dry & Gel Batteries",
-    image: "/battery-thumb3.png",
-  },
+  { id: 1, key: "lithium", title: "Lithium-ion Batteries (48V)", image: "/battery-thumb1.png" },
+  { id: 2, key: "tubular", title: "Tall Tubular Deep Cycle", image: "/battery-thumb2.png" },
+  { id: 3, key: "dry_gel", title: "Dry & Gel Batteries", image: "/battery-thumb3.png" },
 ];
 
-// Bottom 3 Promo Banners (Emerald Theme)
+// Bottom Banners
 const bottomBanners = [
-  {
-    id: 1,
-    title: "Lithium PowerWall",
-    image: "/banner-lithium.png",
-    gradient: "from-[#059669] via-[#10b981] to-[#34d399]",
-    categoryKey: "lithium",
-  },
-  {
-    id: 2,
-    title: "Tall Tubular Series",
-    image: "/banner-tubular.png",
-    gradient: "from-[#047857] via-[#059669] to-[#10b981]",
-    categoryKey: "tubular",
-  },
-  {
-    id: 3,
-    title: "Deep Cycle Solar",
-    image: "/banner-deepcycle.png",
-    gradient: "from-[#065f46] via-[#047857] to-[#059669]",
-    categoryKey: "tubular",
-  },
+  { id: 1, title: "Lithium PowerWall", image: "/banner-lithium.png", gradient: "from-[#059669] via-[#10b981] to-[#34d399]", categoryKey: "lithium" },
+  { id: 2, title: "Tall Tubular Series", image: "/banner-tubular.png", gradient: "from-[#047857] via-[#059669] to-[#10b981]", categoryKey: "tubular" },
+  { id: 3, title: "Deep Cycle Solar", image: "/banner-deepcycle.png", gradient: "from-[#065f46] via-[#047857] to-[#059669]", categoryKey: "dry_gel" },
 ];
 
 export default function BatteriesSection() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTransitioning, setIsTransitioning] = useState(true);
-
-  // Active Category Filter ('all', 'lithium', 'tubular', 'dry_gel')
   const [activeCategory, setActiveCategory] = useState("all");
 
-  // Filter Products based on selected category
-  const filteredProducts =
-    activeCategory === "all"
-      ? batteryProducts
-      : batteryProducts.filter((p) => p.category === activeCategory);
-
-  // Infinite slider array
-  const extendedProducts = [...filteredProducts, ...filteredProducts];
-
-  // Auto-Slide Logic
+  // Fetch Products From Database (Section: batteries)
   useEffect(() => {
+    async function loadBatteries() {
+      try {
+        setLoading(true);
+        const res = await fetch("/api/products?section=batteries");
+        const json = await res.json();
+        if (json.success && Array.isArray(json.data)) {
+          setProducts(json.data);
+        } else if (Array.isArray(json)) {
+          setProducts(json);
+        } else {
+          setProducts([]);
+        }
+      } catch (err) {
+        console.error("Failed to load battery products:", err);
+        setProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadBatteries();
+  }, []);
+
+  // Filter Products based on active category accurately
+  const filteredProducts = useMemo(() => {
+    if (activeCategory === "all") return products;
+    return products.filter((p) => {
+      const cat = (p.category || "").toLowerCase();
+      const sec = (p.section || p.targetSection || "").toLowerCase();
+      const type = (p.type || "").toLowerCase();
+      const matchKey = activeCategory.toLowerCase();
+
+      return cat.includes(matchKey) || sec.includes(matchKey) || type.includes(matchKey);
+    });
+  }, [products, activeCategory]);
+
+  // Extended array for smooth infinite slider loop
+// صرف تب ڈپلیکیٹ کریں جب پروڈکٹس 3 سے زیادہ ہوں (کیونکہ ایک وقت میں 3 کارڈ دکھتے ہیں)
+const extendedProducts = useMemo(() => {
+  if (filteredProducts.length === 0) return [];
+  
+  // اگر 3 یا اس سے کم پروڈکٹس ہیں تو ڈپلیکیٹ نہ کریں
+  if (filteredProducts.length <= 3) {
+    return filteredProducts;
+  }
+  
+  return [...filteredProducts, ...filteredProducts];
+}, [filteredProducts]);
+  // Auto Slider Timer (10 Seconds)
+  useEffect(() => {
+    if (filteredProducts.length === 0) return;
     const timer = setInterval(() => {
       handleNext();
     }, 10000);
-
     return () => clearInterval(timer);
   }, [currentIndex, filteredProducts.length]);
 
@@ -157,7 +110,6 @@ export default function BatteriesSection() {
     }
   };
 
-  // Category switch helper
   const handleSelectCategory = (catKey) => {
     setIsTransitioning(false);
     setActiveCategory(catKey);
@@ -171,7 +123,7 @@ export default function BatteriesSection() {
     <section className="w-full pt-6 pb-8 px-4 lg:px-8 bg-white overflow-hidden select-none">
       <div className="mx-auto max-w-[1600px]">
         
-        {/* 1. Top Marquee */}
+        {/* Top Marquee */}
         <div className="w-full overflow-hidden pb-4 mb-4">
           <div className="flex w-max gap-8 animate-battery-marquee items-center text-gray-800 text-sm font-semibold">
             {Array.from({ length: 12 }).map((_, i) => (
@@ -183,11 +135,11 @@ export default function BatteriesSection() {
           </div>
         </div>
 
-        {/* 2. Header Title */}
+        {/* Header Title */}
         <div className="flex items-center justify-between mb-5">
           <div className="flex items-center gap-3">
             <h2 className="text-xl sm:text-2xl font-bold text-gray-900">
-              Solar & Tubular Batteries
+               Batteries
             </h2>
             {activeCategory !== "all" && (
               <span className="text-xs bg-emerald-100 text-emerald-800 font-semibold px-2.5 py-0.5 rounded-full capitalize">
@@ -201,16 +153,16 @@ export default function BatteriesSection() {
               onClick={() => handleSelectCategory("all")}
               className="text-xs font-semibold text-emerald-600 hover:underline flex items-center gap-1 cursor-pointer"
             >
-              <Layers size={14} /> Show All Products
+              <Layers size={14} /> Show All Batteries
             </button>
           )}
         </div>
 
-        {/* 3. Top Main Section Layout */}
+        {/* Main Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-4 mb-6">
           
           {/* Left Large Banner */}
-          <div className="lg:col-span-3 bg-gradient-to-b from-[#065f46] via-[#047857] to-[#10b981] rounded-xl p-6 flex flex-col justify-between text-white min-h-[380px] shadow-sm">
+          <div className="lg:col-span-3 bg-gradient-to-b from-[#065f46] via-[#047857] to-[#10b981] rounded-xl p-6 flex flex-col justify-between text-white min-h-[420px] shadow-sm">
             <div>
               <p className="uppercase text-xs tracking-wider font-semibold opacity-90 mb-1 text-emerald-200">
                 MAXIMUM BACKUP
@@ -221,7 +173,7 @@ export default function BatteriesSection() {
               <p className="text-sm mt-3 opacity-90">Long Lasting Power</p>
             </div>
 
-            <div className="relative w-full h-44 mt-4">
+            <div className="relative w-full h-48 mt-4">
               <Image
                 src="/promo-batteries.png"
                 alt="Solar Batteries Promo"
@@ -232,86 +184,148 @@ export default function BatteriesSection() {
             </div>
           </div>
 
-          {/* Middle Slider Section */}
-          <div className="lg:col-span-6 relative bg-white rounded-xl p-2 sm:p-3 shadow-sm border border-gray-100 overflow-hidden">
-            <button
-              onClick={handlePrev}
-              aria-label="Previous"
-              className="absolute left-2 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-white border border-gray-300 shadow-md flex items-center justify-center text-gray-700 hover:bg-gray-100 transition-all cursor-pointer"
-            >
-              <ChevronLeft size={20} />
-            </button>
+          {/* Middle Dynamic Cards Slider */}
+          <div className="lg:col-span-6 relative bg-white rounded-xl p-2 sm:p-3 shadow-xs border border-gray-100 min-h-[420px] flex flex-col justify-center">
+            {loading ? (
+              <div className="text-center py-12 text-sm text-gray-500 font-medium">
+                Loading products from database...
+              </div>
+            ) : filteredProducts.length === 0 ? (
+              <div className="text-center py-12 text-sm text-gray-500 font-medium">
+                No battery products available for this category.
+              </div>
+            ) : (
+              <div className="relative w-full overflow-hidden">
+                
+                <button
+                  onClick={handlePrev}
+                  aria-label="Previous"
+                  className="absolute left-1 top-1/2 -translate-y-1/2 z-30 w-9 h-9 rounded-full bg-white/95 border border-gray-200 shadow-md flex items-center justify-center text-gray-700 hover:bg-white hover:scale-110 transition-all cursor-pointer"
+                >
+                  <ChevronLeft size={20} />
+                </button>
 
-            <button
-              onClick={handleNext}
-              aria-label="Next"
-              className="absolute right-2 top-1/2 -translate-y-1/2 z-20 w-9 h-9 rounded-full bg-white border border-gray-300 shadow-md flex items-center justify-center text-gray-700 hover:bg-gray-100 transition-all cursor-pointer"
-            >
-              <ChevronRight size={20} />
-            </button>
+                <button
+                  onClick={handleNext}
+                  aria-label="Next"
+                  className="absolute right-1 top-1/2 -translate-y-1/2 z-30 w-9 h-9 rounded-full bg-white/95 border border-gray-200 shadow-md flex items-center justify-center text-gray-700 hover:bg-white hover:scale-110 transition-all cursor-pointer"
+                >
+                  <ChevronRight size={20} />
+                </button>
 
-            <div className="overflow-hidden h-full">
-              <div
-                onTransitionEnd={handleTransitionEnd}
-                className={`flex h-full ${
-                  isTransitioning ? "transition-transform duration-500 ease-in-out" : ""
-                }`}
-                style={{
-                  transform: `translateX(calc(-${currentIndex} * var(--battery-slide-step)))`,
-                }}
-              >
-                {extendedProducts.map((product, index) => (
+                <div className="w-full overflow-hidden px-1">
                   <div
-                    key={`${product.id}-${index}`}
-                    className="w-full sm:w-1/2 md:w-1/3 flex-shrink-0 p-2"
+                    onTransitionEnd={handleTransitionEnd}
+                    className={`flex ${
+                      isTransitioning ? "transition-transform duration-500 ease-in-out" : ""
+                    }`}
+                    style={{
+                      transform: `translateX(-${currentIndex * (100 / 3)}%)`,
+                    }}
                   >
-                    <div className="h-full flex flex-col justify-between bg-white border border-gray-100 rounded-md p-2 hover:shadow-md transition-shadow relative">
-                      
-                      {/* Image */}
-                      <div className="relative w-full aspect-square bg-emerald-50/40 rounded mb-3 flex items-center justify-center">
-                        <Image
-                          src={product.image}
-                          alt={product.title}
-                          fill
-                          unoptimized
-                          className="object-contain p-2 hover:scale-105 transition-transform duration-300"
-                        />
-                      </div>
+                    {extendedProducts.map((product, idx) => {
+                      const orig = parseFloat(product.originalPrice || product.oldPrice) || 0;
+                      const disc = parseFloat(product.discountedPrice || product.price) || 0;
+                      const savings = orig > disc ? orig - disc : null;
 
-                      {/* Info & WhatsApp Action */}
-                      <div className="flex flex-col flex-grow justify-between">
-                        <div>
-                          <h3 className="text-xs font-medium text-gray-800 line-clamp-2 leading-snug mb-2 min-h-[32px]">
-                            {product.title}
-                          </h3>
+                      return (
+                        <div
+                          key={`${product.id || product._id || "battery"}-${idx}`}
+                          className="w-full sm:w-1/2 lg:w-1/3 flex-shrink-0 px-1.5"
+                        >
+                          <div className="bg-white border border-gray-200 rounded-2xl p-3 flex flex-col justify-between h-full shadow-xs hover:shadow-md transition-shadow relative">
+                            
+                            <div>
+                              {/* Image Box */}
+                              <div className="relative w-full h-44 bg-emerald-50/40 rounded-xl overflow-hidden mb-3 flex items-center justify-center">
+                                {product.badge && (
+                                  <span className="absolute top-2 left-2 z-10 bg-emerald-600 text-white text-[10px] font-black uppercase px-2.5 py-1 rounded-full tracking-wide">
+                                    {product.badge}
+                                  </span>
+                                )}
 
-                          <div className="flex items-baseline gap-1.5 flex-wrap mb-1">
-                            <span className="text-[11px] text-gray-400 line-through">
-                              {product.originalPrice}
-                            </span>
-                            <span className="text-xs font-bold text-emerald-700">
-                              {product.discountedPrice}
-                            </span>
-                          </div>
+                                <Image
+                                  src={product.image || product.imageUrl || "/battery1.png"}
+                                  alt={product.title || product.name || "Battery"}
+                                  fill
+                                  unoptimized
+                                  className="object-contain p-2 hover:scale-105 transition-transform duration-300"
+                                />
+                              </div>
 
-                          <div className="inline-block bg-emerald-600 text-white text-[10px] font-semibold px-1.5 py-0.5 rounded mb-3">
-                            {product.savings}
+                              {/* Category Pill */}
+                              {(product.categoryPill || product.category || product.tag) && (
+                                <div className="mb-1.5">
+                                  <span className="inline-block bg-[#f1f5f9] text-[#64748b] text-[11px] font-semibold px-2.5 py-0.5 rounded-md">
+                                    {product.categoryPill || product.category || product.tag}
+                                  </span>
+                                </div>
+                              )}
+
+                              {/* Title */}
+                              <h3 className="text-sm font-bold text-gray-900 line-clamp-1 mb-0.5">
+                                {product.title || product.name || "Product Title"}
+                              </h3>
+
+                              {/* Description */}
+                              {product.description && (
+                                <p className="text-[12px] text-gray-500 line-clamp-1 mb-2">
+                                  {product.description}
+                                </p>
+                              )}
+
+                              {/* Specs Badge */}
+                              {(product.specifications || product.warranty) && (
+                                <div className="mb-3">
+                                  <span className="inline-flex items-center gap-1 bg-[#ecfdf5] border border-[#a7f3d0] text-[#047857] text-[11px] font-medium px-2 py-0.5 rounded-md">
+                                    <ShieldCheck size={12} className="text-[#059669]" />
+                                    <span className="truncate">
+                                      {product.specifications || product.warranty}
+                                    </span>
+                                  </span>
+                                </div>
+                              )}
+                            </div>
+
+                            <div>
+                              {/* Price */}
+                              <div className="flex items-baseline gap-2 mb-0.5">
+                                {orig > 0 && (
+                                  <span className="text-xs text-gray-400 line-through font-medium">
+                                    {orig}
+                                  </span>
+                                )}
+                                <span className="text-base font-extrabold text-gray-900">
+                                  {disc || product.price || "N/A"}
+                                </span>
+                              </div>
+
+                              {/* Save Amount */}
+                              {savings && (
+                                <p className="text-[11px] font-bold text-emerald-600 mb-3">
+                                  Save Rs.{savings}
+                                </p>
+                              )}
+
+                              {/* Action Button */}
+                              <button
+                                onClick={() => sendToWhatsApp(product)}
+                                className="w-full bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+                              >
+                                <ShoppingBag size={14} />
+                                <span>{product.buttonText || "Buy Now"}</span>
+                              </button>
+                            </div>
+
                           </div>
                         </div>
-
-                        {/* 🚀 WhatsApp Trigger */}
-                        <button
-                          onClick={() => sendToWhatsApp(product)}
-                          className="w-full py-1.5 px-3 rounded-full border border-emerald-900 text-emerald-900 font-medium text-xs hover:bg-emerald-900 hover:text-white transition-colors duration-200 cursor-pointer"
-                        >
-                          {product.buttonText}
-                        </button>
-                      </div>
-                    </div>
+                      );
+                    })}
                   </div>
-                ))}
+                </div>
+
               </div>
-            </div>
+            )}
           </div>
 
           {/* Right Column Categories List */}
@@ -323,10 +337,10 @@ export default function BatteriesSection() {
                   <div
                     key={cat.id}
                     onClick={() => handleSelectCategory(cat.key)}
-                    className={`rounded-xl p-4 flex items-center justify-between shadow-sm border transition-all cursor-pointer group ${
+                    className={`rounded-xl p-4 flex items-center justify-between shadow-xs border transition-all cursor-pointer group ${
                       isActive
-                        ? "bg-emerald-50/80 border-emerald-500 shadow-md"
-                        : "bg-white border-gray-100 hover:shadow-md"
+                        ? "bg-emerald-50/80 border-emerald-500 shadow-sm"
+                        : "bg-white border-gray-100 hover:shadow-xs"
                     }`}
                   >
                     <div>
@@ -358,12 +372,11 @@ export default function BatteriesSection() {
               })}
             </div>
 
-            {/* View All Button */}
             <div
               onClick={() => handleSelectCategory("all")}
-              className={`rounded-xl p-4 flex items-center justify-center shadow-sm border cursor-pointer transition-all ${
+              className={`rounded-xl p-4 flex items-center justify-center shadow-xs border cursor-pointer transition-colors ${
                 activeCategory === "all"
-                  ? "bg-emerald-50 border-emerald-500 font-bold text-emerald-700 shadow-md"
+                  ? "bg-emerald-700 text-white border-emerald-700 shadow-sm"
                   : "bg-white text-gray-700 border-gray-100 hover:bg-gray-50"
               }`}
             >
@@ -375,20 +388,24 @@ export default function BatteriesSection() {
 
         </div>
 
-        {/* 4. Bottom Banners */}
+        {/* Bottom Banners */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {bottomBanners.map((banner) => (
             <div
               key={banner.id}
-              className={`relative overflow-hidden bg-gradient-to-r ${banner.gradient} rounded-xl p-5 sm:p-6 text-white flex items-center justify-between min-h-[140px] shadow-sm hover:shadow-md transition-shadow`}
+              className={`relative overflow-hidden bg-gradient-to-r ${banner.gradient} rounded-xl p-5 sm:p-6 text-white flex items-center justify-between min-h-[140px] shadow-xs hover:shadow-sm transition-shadow`}
             >
               <div className="z-10 max-w-[60%]">
                 <h3 className="text-lg sm:text-xl font-bold leading-tight mb-4">
                   {banner.title}
                 </h3>
-                {/* 🚀 Banner WhatsApp Trigger */}
                 <button
-                  onClick={() => sendToWhatsApp({ title: banner.title, category: banner.categoryKey })}
+                  onClick={() =>
+                    sendToWhatsApp({
+                      title: banner.title,
+                      category: banner.categoryKey,
+                    })
+                  }
                   className="bg-white/20 hover:bg-white/30 backdrop-blur-sm text-white text-xs font-medium px-4 py-1.5 rounded-full transition-colors inline-flex items-center gap-1 cursor-pointer"
                 >
                   Shop Now
@@ -411,20 +428,6 @@ export default function BatteriesSection() {
       </div>
 
       <style jsx global>{`
-        :root {
-          --battery-slide-step: 100%;
-        }
-        @media (min-width: 640px) {
-          :root {
-            --battery-slide-step: 50%;
-          }
-        }
-        @media (min-width: 768px) {
-          :root {
-            --battery-slide-step: 33.333%;
-          }
-        }
-
         @keyframes batteryMarquee {
           0% {
             transform: translateX(0%);

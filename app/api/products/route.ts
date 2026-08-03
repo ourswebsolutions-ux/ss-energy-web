@@ -1,16 +1,7 @@
 import { NextResponse } from "next/server";
-<<<<<<< HEAD
 import { prisma } from "../../../lib/prisma";
 
-=======
-// Import the instantiated `prisma` client using Next.js path alias:
-// import { prisma } from "@/lib/prisma";
-
-// If you prefer relative paths based on your folder structure, use:
-import { prisma } from "../../../lib/prisma";
-
-// GET Products
->>>>>>> ebfd850 (updated)
+// GET Products ebfd850 (updated)
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
