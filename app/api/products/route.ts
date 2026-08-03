@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-// import { PrismaClient } from "@/lib/generated/prisma";
-import { Prisma } from "../../../lib/generated/prisma/client";
-// GET Products
+import { prisma } from "../../../lib/prisma";
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
