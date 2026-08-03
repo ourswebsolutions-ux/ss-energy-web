@@ -8,6 +8,7 @@ export default function AdminProductsPage() {
   const [products, setProducts] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [notification, setNotification] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const [formData, setFormData] = useState({
     title: "",
@@ -25,55 +26,25 @@ export default function AdminProductsPage() {
     specs: "",
   });
 
-  useEffect(() => {
-    const saved = localStorage.getItem("solar_store_products");
-    if (saved) {
-      setProducts(JSON.parse(saved));
-    } else {
-      const defaultProducts = [
-        {
-          id: 1,
-          title: "Longi Hi-MO 6 N-Type 585W Mono Perc Solar Panel",
-          description: "High efficiency solar panel with low degradation rate.",
-          originalPrice: "Rs.35,000",
-          discountedPrice: "Rs.28,500",
-          savings: "Save Rs.6,500",
-          image: "/panel1.png",
-          buttonText: "Add To Cart",
-          category: "550w-mono",
-          targetSection: "panels",
-          warranty: "12 Years",
-          inStock: true,
-          badgeText: "HOT DEAL",
-          specs: "585W | Monocrystalline",
-        },
-        {
-          id: 2,
-          title: "GoodWe ES Uniq GW8000M-ES-C10 8kw Hybrid Solar Inverter",
-          description: "Dual MPPT hybrid inverter with battery backup option.",
-          originalPrice: "Rs.340,000",
-          discountedPrice: "Rs.310,000",
-          savings: "Save Rs.30,000",
-          image: "/inverter1.png",
-          buttonText: "Pre-Order",
-          category: "2.5-10kw",
-          targetSection: "inverters",
-          warranty: "5 Years",
-          inStock: true,
-          badgeText: "POPULAR",
-          specs: "8kW | Hybrid",
-        },
-      ];
-      setProducts(defaultProducts);
-      localStorage.setItem("solar_store_products", JSON.stringify(defaultProducts));
-    }
-  }, []);
+  // Database se products fetch karna
+  const fetchProducts = async () => {
+    try {
+      const res = await fetch("/api/products");
+      const result = await res.json();
 
-  const syncProducts = (updatedList) => {
-    setProducts(updatedList);
-    localStorage.setItem("solar_store_products", JSON.stringify(updatedList));
-    window.dispatchEvent(new Event("storage"));
+      if (result.success) {
+        setProducts(result.data || []);
+      } else {
+        console.error("Fetch error:", result.error);
+      }
+    } catch (error) {
+      console.error("Failed to fetch products:", error);
+    }
   };
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
 
   const handlePriceChange = (e) => {
     const { name, value } = e.target;
@@ -100,55 +71,118 @@ export default function AdminProductsPage() {
     }));
   };
 
-  const handleImageUpload = (e) => {
+  // Cloudinary image upload handler
+  const handleImageUpload = async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setFormData((prev) => ({ ...prev, image: imageUrl }));
+    if (!file) return;
+
+    const uploadData = new FormData();
+    uploadData.append("image", file);
+
+    try {
+      setNotification("Uploading image...");
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: uploadData,
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setFormData((prev) => ({
+          ...prev,
+          image: data.url,
+        }));
+        setNotification("Image uploaded successfully");
+        setTimeout(() => setNotification(""), 3000);
+      } else {
+        alert(data.message || "Image upload failed");
+        setNotification("");
+      }
+    } catch (error) {
+      console.error("Upload error:", error);
+      alert("Upload failed");
+      setNotification("");
     }
   };
 
-  const handleSubmit = (e) => {
+  // Form Submit: Database me save karna
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!formData.title || !formData.discountedPrice) {
-      alert("Please fill title and discounted price.");
+      alert("Please fill required fields");
       return;
     }
 
-    const newProduct = {
-      id: Date.now(),
-      ...formData,
-      image: formData.image || "/placeholder.png",
-    };
+    try {
+      setLoading(true);
+      const res = await fetch("/api/products", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-    const updated = [newProduct, ...products];
-    syncProducts(updated);
+      const data = await res.json();
 
-    setNotification("Product added to website successfully!");
-    setTimeout(() => setNotification(""), 3000);
+      if (data.success) {
+        // Updated product list me add karna
+        setProducts((prev) => [data.data, ...prev]);
 
-    setFormData({
-      title: "",
-      description: "",
-      originalPrice: "",
-      discountedPrice: "",
-      savings: "",
-      image: "",
-      buttonText: "Add To Cart",
-      category: "",
-      targetSection: formData.targetSection,
-      warranty: "",
-      inStock: true,
-      badgeText: "",
-      specs: "",
-    });
+        setNotification("Product saved successfully in database!");
+        setTimeout(() => setNotification(""), 3000);
+
+        // Reset form
+        setFormData({
+          title: "",
+          description: "",
+          originalPrice: "",
+          discountedPrice: "",
+          savings: "",
+          image: "",
+          buttonText: "Add To Cart",
+          category: "",
+          targetSection: "panels",
+          warranty: "",
+          inStock: true,
+          badgeText: "",
+          specs: "",
+        });
+      } else {
+        alert(data.error || "Failed to save product");
+      }
+    } catch (error) {
+      console.error("Save error:", error);
+      alert("Product save error");
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleDelete = (id) => {
+  // Delete product from Database
+  const handleDelete = async (id) => {
     if (confirm("Are you sure you want to delete this product?")) {
-      const filtered = products.filter((p) => p.id !== id);
-      syncProducts(filtered);
+      try {
+        const res = await fetch(`/api/products?id=${id}`, {
+          method: "DELETE",
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+          setProducts((prev) => prev.filter((p) => p.id !== id));
+          setNotification("Product deleted successfully");
+          setTimeout(() => setNotification(""), 3000);
+        } else {
+          alert(data.error || "Failed to delete product");
+        }
+      } catch (error) {
+        console.error("Delete error:", error);
+        alert("Failed to delete product");
+      }
     }
   };
 
@@ -190,14 +224,14 @@ export default function AdminProductsPage() {
 
   const filteredProducts = products.filter(
     (p) =>
-      p.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.targetSection.toLowerCase().includes(searchQuery.toLowerCase())
+      p.title?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      p.targetSection?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-800 p-4 sm:p-6 lg:p-8 font-sans">
       <div className="max-w-7xl mx-auto space-y-6">
-        
+
         {/* Notification Toast */}
         {notification && (
           <div className="flex items-center gap-2 bg-emerald-600 text-white px-5 py-3 rounded-xl shadow-md font-medium text-sm">
@@ -207,7 +241,7 @@ export default function AdminProductsPage() {
 
         {/* Main Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-          
+
           {/* Left Form */}
           <div className="lg:col-span-7 bg-white p-6 rounded-2xl border border-slate-200 shadow-xs">
             <div className="flex items-center justify-between pb-4 mb-5 border-b border-slate-100">
@@ -217,7 +251,7 @@ export default function AdminProductsPage() {
             </div>
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              
+
               {/* Category Selector */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-2">
@@ -447,9 +481,10 @@ export default function AdminProductsPage() {
               {/* Submit Button */}
               <button
                 type="submit"
-                className="w-full py-3.5 px-4 rounded-xl bg-slate-900 hover:bg-black text-white font-bold text-xs tracking-wide shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer mt-2"
+                disabled={loading}
+                className="w-full py-3.5 px-4 rounded-xl bg-slate-900 hover:bg-black text-white font-bold text-xs tracking-wide shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer mt-2 disabled:opacity-50"
               >
-                <PlusCircle size={18} /> Save & Publish
+                <PlusCircle size={18} /> {loading ? "Saving..." : "Save & Publish"}
               </button>
 
             </form>
@@ -457,7 +492,7 @@ export default function AdminProductsPage() {
 
           {/* Right Side - Exact Component Card Preview & List */}
           <div className="lg:col-span-5 space-y-6">
-            
+
             {/* Component Exact Card Preview */}
             <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-xs">
               <div className="flex items-center justify-between mb-4">
@@ -471,7 +506,7 @@ export default function AdminProductsPage() {
 
               {/* Exact E-Commerce Card Structure */}
               <div className="max-w-[280px] mx-auto bg-white rounded-2xl border border-slate-200 p-4 shadow-sm hover:shadow-lg transition-all duration-300 relative flex flex-col justify-between group">
-                
+
                 {/* Top Badge Tag */}
                 {formData.badgeText && (
                   <span className={`absolute top-3 left-3 z-10 text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full shadow-xs ${theme.badge}`}>
@@ -574,13 +609,19 @@ export default function AdminProductsPage() {
                     >
                       <div className="flex items-center gap-3 overflow-hidden">
                         <div className="relative w-10 h-10 bg-white rounded-lg border border-slate-200 flex-shrink-0">
-                          <Image
-                            src={p.image}
-                            alt={p.title}
-                            fill
-                            unoptimized
-                            className="object-contain p-1"
-                          />
+                          {p.image ? (
+                            <Image
+                              src={p.image}
+                              alt={p.title}
+                              fill
+                              unoptimized
+                              className="object-contain p-1"
+                            />
+                          ) : (
+                            <div className="w-full h-full bg-slate-100 flex items-center justify-center text-[10px] text-slate-400">
+                              No image
+                            </div>
+                          )}
                         </div>
                         <div className="truncate">
                           <h4 className="text-xs font-bold text-slate-900 truncate">
@@ -610,7 +651,7 @@ export default function AdminProductsPage() {
         </div>
 
       </div>
-      
+
     </div>
   );
 }
