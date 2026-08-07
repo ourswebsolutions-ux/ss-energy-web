@@ -7,16 +7,16 @@ import { sendToWhatsApp } from "../../lib/whatsappUtils";
 
 // Right Side Sub-Categories
 const rightCategories = [
-  { id: 1, key: "lithium", title: "Lithium-ion Batteries (48V)", image: "/battery-thumb1.png" },
-  { id: 2, key: "tubular", title: "Tall Tubular Deep Cycle", image: "/battery-thumb2.png" },
-  { id: 3, key: "dry_gel", title: "Dry & Gel Batteries", image: "/battery-thumb3.png" },
+  { id: 1, key: "lithium", title: "Lithium-ion Batteries (48V)", image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400&q=80" },
+  { id: 2, key: "tubular", title: "Tall Tubular Deep Cycle", image: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=400&q=80" },
+  { id: 3, key: "dry_gel", title: "Dry & Gel Batteries", image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80" },
 ];
 
 // Bottom Banners
 const bottomBanners = [
-  { id: 1, title: "Lithium PowerWall", image: "/banner-lithium.png", gradient: "from-[#059669] via-[#10b981] to-[#34d399]", categoryKey: "lithium" },
-  { id: 2, title: "Tall Tubular Series", image: "/banner-tubular.png", gradient: "from-[#047857] via-[#059669] to-[#10b981]", categoryKey: "tubular" },
-  { id: 3, title: "Deep Cycle Solar", image: "/banner-deepcycle.png", gradient: "from-[#065f46] via-[#047857] to-[#059669]", categoryKey: "dry_gel" },
+  { id: 1, title: "Lithium PowerWall", image: "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=500&q=80", gradient: "from-[#059669] via-[#10b981] to-[#34d399]", categoryKey: "lithium" },
+  { id: 2, title: "Tall Tubular Series", image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=500&q=80", gradient: "from-[#047857] via-[#059669] to-[#10b981]", categoryKey: "tubular" },
+  { id: 3, title: "Deep Cycle Solar", image: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=500&q=80", gradient: "from-[#065f46] via-[#047857] to-[#059669]", categoryKey: "dry_gel" },
 ];
 
 export default function BatteriesSection() {
@@ -175,7 +175,7 @@ const extendedProducts = useMemo(() => {
 
             <div className="relative w-full h-48 mt-4">
               <Image
-                src="/promo-batteries.png"
+                src="https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=600&q=80"
                 alt="Solar Batteries Promo"
                 fill
                 unoptimized
@@ -245,7 +245,7 @@ const extendedProducts = useMemo(() => {
                                 )}
 
                                 <Image
-                                  src={product.image || product.imageUrl || "/battery1.png"}
+                                  src={product.image || product.imageUrl || "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=400&q=80"}
                                   alt={product.title || product.name || "Battery"}
                                   fill
                                   unoptimized

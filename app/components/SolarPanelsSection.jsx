@@ -6,30 +6,30 @@ import { ChevronLeft, ChevronRight, Zap, Layers, ShoppingBag, ShieldCheck } from
 import { sendToWhatsApp } from "../../lib/whatsappUtils";
 
 const rightCategories = [
-  { id: 1, key: "mono", title: "Monocrystalline Panels", image: "/solar-thumb1.png" },
-  { id: 2, key: "bifacial", title: "Bifacial Double Glass", image: "/solar-thumb2.png" },
-  { id: 3, key: "poly", title: "Polycrystalline Series", image: "/solar-thumb3.png" },
+  { id: 1, key: "mono", title: "Monocrystalline Panels", image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400&q=80" },
+  { id: 2, key: "bifacial", title: "Bifacial Double Glass", image: "https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=400&q=80" },
+  { id: 3, key: "poly", title: "Polycrystalline Series", image: "https://images.unsplash.com/photo-1613665813446-82a78c468a1d?w=400&q=80" },
 ];
 
 const bottomBanners = [
   {
     id: 1,
     title: "N-Type High Efficiency",
-    image: "/banner-solar1.png",
+    image: "https://images.unsplash.com/photo-1559302504-64aae6ca6b6d?w=500&q=80",
     gradient: "from-[#0284c7] via-[#0369a1] to-[#075985]",
     categoryKey: "mono",
   },
   {
     id: 2,
     title: "Bifacial Dual Power",
-    image: "/banner-solar2.png",
+    image: "https://images.unsplash.com/photo-1497435334941-8c899ee9e8e9?w=500&q=80",
     gradient: "from-[#0369a1] via-[#075985] to-[#0c4a6e]",
     categoryKey: "bifacial",
   },
   {
     id: 3,
     title: "Commercial Grade Panels",
-    image: "/banner-solar3.png",
+    image: "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=500&q=80",
     gradient: "from-[#0f172a] via-[#1e293b] to-[#334155]",
     categoryKey: "poly",
   },
@@ -196,7 +196,7 @@ const extendedProducts = useMemo(() => {
             
             <div className="relative w-full h-48 mt-4">
               <Image
-                src="/promo-solar.png"
+                src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?w=600&q=80"
                 alt="Solar Panels Promo"
                 fill
                 unoptimized
@@ -270,7 +270,7 @@ const extendedProducts = useMemo(() => {
                                 )}
 
                                 <Image
-                                  src={product.image || product.imageUrl || "/solar1.png"}
+                                  src={product.image || product.imageUrl || "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400&q=80"}
                                   alt={product.title || product.name || "Product"}
                                   fill
                                   unoptimized

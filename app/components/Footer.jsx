@@ -2,7 +2,17 @@
 
 import React from "react";
 import Link from "next/link";
-import { MapPin, Phone, Mail, Facebook, Instagram, Youtube } from "lucide-react";
+import {
+  MapPin,
+  Phone,
+  Mail,
+  Facebook,
+  Instagram,
+  Youtube,
+  Shield,
+  Home,
+  MessageCircle,
+} from "lucide-react";
 
 // Simple TikTok Icon component for Lucide compatibility
 const TikTokIcon = ({ className = "w-4 h-4" }) => (
@@ -18,200 +28,186 @@ const TikTokIcon = ({ className = "w-4 h-4" }) => (
 
 export default function Footer() {
   return (
-    <footer className="w-full bg-[#f9f9f9] border-t border-gray-100 text-gray-700 text-sm pt-12 pb-8 px-4 lg:px-8">
-      <div className="mx-auto max-w-[1600px]">
-
-        {/* Top 4 Columns Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+    <footer className="w-full bg-[#e5e7eb] from-[#F6F9FF] to-[#EEF4FF] border-t border-[#DCE7F7] text-gray-700">
+      {/* Main Footer Content */}
+      <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8 pt-14 pb-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-10 lg:gap-8">
           
-          {/* Col 1: CONTACT US */}
-          <div>
-            <h3 className="text-sm font-bold text-gray-900 tracking-wider mb-5 uppercase">
-              CONTACT US
+          {/* Brand + Description */}
+          <div className="lg:col-span-5">
+            <div className="flex items-center gap-3 mb-5">
+              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#0B4AA8] to-[#0A2E73] flex items-center justify-center shadow-md shadow-blue-900/20">
+                <span className="text-white font-bold text-lg tracking-tight">SS</span>
+              </div>
+              <div>
+                <h2 className="text-lg font-bold text-[#0B4AA8] tracking-tight leading-none">
+                  SS ENERGY
+                </h2>
+                <p className="text-[11px] font-medium text-gray-500 tracking-wider uppercase mt-0.5">
+                  Trading Corporation
+                </p>
+              </div>
+            </div>
+
+            <p className="text-sm text-gray-600 leading-relaxed max-w-md mb-6">
+              Premium solar energy solutions for homes and businesses across Pakistan. 
+              Trusted quality, reliable performance, and professional service since day one.
+            </p>
+
+            {/* Quick Navigation */}
+            <div className="flex flex-wrap items-center gap-3">
+              <Link
+                href="/"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-white border border-[#DCE7F7] text-sm font-medium text-gray-700 hover:border-[#0B4AA8] hover:text-[#0B4AA8] transition-all duration-200 shadow-sm"
+              >
+                <Home className="w-4 h-4" />
+                Home
+              </Link>
+
+              <Link
+                href="/admin"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-[#0B4AA8] to-[#0A2E73] text-sm font-semibold text-white hover:from-[#0A3D8F] hover:to-[#08255C] transition-all duration-200 shadow-md shadow-blue-900/25 hover:shadow-lg hover:shadow-blue-900/30"
+              >
+                <Shield className="w-4 h-4" />
+                Admin Panel
+              </Link>
+            </div>
+          </div>
+
+          {/* Contact Information */}
+          <div className="lg:col-span-4">
+            <h3 className="text-xs font-bold text-[#1A1A1A] tracking-[0.15em] uppercase mb-5">
+              Contact Information
             </h3>
 
-            <div className="space-y-4 text-xs sm:text-sm text-gray-600">
+            <div className="space-y-4">
               {/* Address */}
-              <div className="flex items-start gap-3">
-                <MapPin className="w-4 h-4 text-gray-900 mt-0.5 flex-shrink-0" />
-                <p className="leading-relaxed">
-                  Alladin Store Khara Chungi,<br />
-                  Mushtaq Colony, Kasur, Punjab
+              <div className="flex items-start gap-3 group">
+                <div className="mt-0.5 w-8 h-8 rounded-lg bg-white border border-[#DCE7F7] flex items-center justify-center flex-shrink-0 group-hover:border-[#0B4AA8]/40 transition-colors">
+                  <MapPin className="w-3.5 h-3.5 text-[#0B4AA8]" />
+                </div>
+                <p className="text-sm text-gray-600 leading-relaxed pt-1">
+                  SS ENERGY Trading Corporation<br />
+                  Kasur, Punjab, Pakistan
                 </p>
               </div>
 
-              {/* Phone & Whatsapp */}
-              <div className="flex items-start gap-3">
-                <Phone className="w-4 h-4 text-gray-900 mt-0.5 flex-shrink-0" />
-                <div>
-                  <p>
-                    Phone{" "}
-                    <a href="tel:03351111200" className="underline hover:text-black">
-                      0335-1111-200
-                    </a>
-                  </p>
-                  <p className="mt-0.5">
-                    Whatsapp{" "}
-                    <a href="https://wa.me/923316801200" target="_blank" rel="noreferrer" className="underline hover:text-black">
-                      03316801200
-                    </a>
-                  </p>
+              {/* Phone */}
+              <div className="flex items-start gap-3 group">
+                <div className="mt-0.5 w-8 h-8 rounded-lg bg-white border border-[#DCE7F7] flex items-center justify-center flex-shrink-0 group-hover:border-[#0B4AA8]/40 transition-colors">
+                  <Phone className="w-3.5 h-3.5 text-[#0B4AA8]" />
+                </div>
+                <div className="pt-1">
+                  <a
+                    href="tel:03351111200"
+                    className="block text-sm text-gray-600 hover:text-[#0B4AA8] transition-colors"
+                  >
+                    0335-1111-200
+                  </a>
+                </div>
+              </div>
+
+              {/* WhatsApp */}
+              <div className="flex items-start gap-3 group">
+                <div className="mt-0.5 w-8 h-8 rounded-lg bg-white border border-[#DCE7F7] flex items-center justify-center flex-shrink-0 group-hover:border-[#0B4AA8]/40 transition-colors">
+                  <MessageCircle className="w-3.5 h-3.5 text-[#0B4AA8]" />
+                </div>
+                <div className="pt-1">
+                  <a
+                    href="https://wa.me/923316801200"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="block text-sm text-gray-600 hover:text-[#0B4AA8] transition-colors"
+                  >
+                    WhatsApp: 0331-680-1200
+                  </a>
                 </div>
               </div>
 
               {/* Email */}
-              <div className="flex items-center gap-3">
-                <Mail className="w-4 h-4 text-gray-900 flex-shrink-0" />
-                <a href="mailto:contact@alladin.pk" className="underline hover:text-black">
-                  contact@alladin.pk
-                </a>
-              </div>
-            </div>
-
-            {/* Social Links */}
-            <div className="mt-6">
-              <h4 className="text-xs font-bold text-gray-900 tracking-wider mb-3 uppercase">
-                SOCIAL LINKS
-              </h4>
-              <div className="flex items-center gap-2">
-                {/* Facebook */}
-                <a
-                  href="#"
-                  aria-label="Facebook"
-                  className="w-8 h-8 rounded-full bg-[#3b5998] text-white flex items-center justify-center hover:opacity-90 transition-opacity"
-                >
-                  <Facebook size={16} fill="white" />
-                </a>
-
-                {/* Instagram */}
-                <a
-                  href="#"
-                  aria-label="Instagram"
-                  className="w-8 h-8 rounded-full bg-[#2e6997] text-white flex items-center justify-center hover:opacity-90 transition-opacity"
-                >
-                  <Instagram size={16} />
-                </a>
-
-                {/* TikTok */}
-                <a
-                  href="#"
-                  aria-label="TikTok"
-                  className="w-8 h-8 rounded-full bg-black text-white flex items-center justify-center hover:opacity-90 transition-opacity"
-                >
-                  <TikTokIcon className="w-4 h-4" />
-                </a>
-
-                {/* YouTube */}
-                <a
-                  href="#"
-                  aria-label="YouTube"
-                  className="w-8 h-8 rounded-full bg-[#ff0000] text-white flex items-center justify-center hover:opacity-90 transition-opacity"
-                >
-                  <Youtube size={16} fill="white" />
-                </a>
+              <div className="flex items-start gap-3 group">
+                <div className="mt-0.5 w-8 h-8 rounded-lg bg-white border border-[#DCE7F7] flex items-center justify-center flex-shrink-0 group-hover:border-[#0B4AA8]/40 transition-colors">
+                  <Mail className="w-3.5 h-3.5 text-[#0B4AA8]" />
+                </div>
+                <div className="pt-1">
+                  <a
+                    href="mailto:contact@ssenergy.pk"
+                    className="block text-sm text-gray-600 hover:text-[#0B4AA8] transition-colors"
+                  >
+                    contact@ssenergy.pk
+                  </a>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Col 2: HOT LINKS */}
-          <div>
-            <h3 className="text-sm font-bold text-gray-900 tracking-wider mb-5 uppercase">
-              HOT LINKS
+          {/* Social */}
+          <div className="lg:col-span-3">
+            <h3 className="text-xs font-bold text-[#1A1A1A] tracking-[0.15em] uppercase mb-5">
+              Follow Us
             </h3>
-            <ul className="space-y-3 text-xs sm:text-sm text-gray-600">
-              <li>
-                <Link href="/" className="hover:text-black transition-colors">
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link href="/blogs" className="hover:text-black transition-colors">
-                  Blogs
-                </Link>
-              </li>
-              <li>
-                <Link href="/about" className="hover:text-black transition-colors">
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact" className="hover:text-black transition-colors">
-                  Contact
-                </Link>
-              </li>
-              <li>
-                <Link href="/track-order" className="hover:text-black transition-colors">
-                  Track Order
-                </Link>
-              </li>
-            </ul>
-          </div>
 
-          {/* Col 3: FURTHER INFO */}
-          <div>
-            <h3 className="text-sm font-bold text-gray-900 tracking-wider mb-5 uppercase">
-              FURTHER INFO
-            </h3>
-            <ul className="space-y-3 text-xs sm:text-sm text-gray-600">
-              <li>
-                <Link href="/warranty-policy" className="hover:text-black transition-colors">
-                  Warranty Policy
-                </Link>
-              </li>
-              <li>
-                <Link href="/privacy-policy" className="hover:text-black transition-colors">
-                  Privacy Policy
-                </Link>
-              </li>
-              <li>
-                <Link href="/return-policy" className="hover:text-black transition-colors">
-                  Return/Replacement Policy
-                </Link>
-              </li>
-              <li>
-                <Link href="/terms-of-service" className="hover:text-black transition-colors">
-                  Terms Of Service
-                </Link>
-              </li>
-              <li>
-                <Link href="/contact-info" className="hover:text-black transition-colors">
-                  Contact Information
-                </Link>
-              </li>
-            </ul>
-          </div>
+            <div className="flex items-center gap-2.5 mb-8">
+              <a
+                href="#"
+                aria-label="Facebook"
+                className="w-10 h-10 rounded-xl bg-white border border-[#DCE7F7] text-[#0B4AA8] flex items-center justify-center hover:bg-[#0B4AA8] hover:text-white hover:border-[#0B4AA8] hover:shadow-md hover:shadow-blue-900/20 transition-all duration-200"
+              >
+                <Facebook size={17} />
+              </a>
 
-          {/* Col 4: QUICK LINKS */}
-          <div>
-            <h3 className="text-sm font-bold text-gray-900 tracking-wider mb-5 uppercase">
-              QUICK LINKS
-            </h3>
-            <ul className="space-y-3 text-xs sm:text-sm text-gray-600">
-              <li>
-                <Link href="/orders" className="hover:text-black transition-colors">
-                  Orders
-                </Link>
-              </li>
-              <li>
-                <Link href="/profile" className="hover:text-black transition-colors">
-                  Profile
-                </Link>
-              </li>
-              <li>
-                <Link href="/settings" className="hover:text-black transition-colors">
-                  Settings
-                </Link>
-              </li>
-            </ul>
-          </div>
+              <a
+                href="#"
+                aria-label="Instagram"
+                className="w-10 h-10 rounded-xl bg-white border border-[#DCE7F7] text-[#0B4AA8] flex items-center justify-center hover:bg-[#0B4AA8] hover:text-white hover:border-[#0B4AA8] hover:shadow-md hover:shadow-blue-900/20 transition-all duration-200"
+              >
+                <Instagram size={17} />
+              </a>
 
+              <a
+                href="#"
+                aria-label="TikTok"
+                className="w-10 h-10 rounded-xl bg-white border border-[#DCE7F7] text-[#0B4AA8] flex items-center justify-center hover:bg-[#0B4AA8] hover:text-white hover:border-[#0B4AA8] hover:shadow-md hover:shadow-blue-900/20 transition-all duration-200"
+              >
+                <TikTokIcon className="w-4 h-4" />
+              </a>
+
+              <a
+                href="#"
+                aria-label="YouTube"
+                className="w-10 h-10 rounded-xl bg-white border border-[#DCE7F7] text-[#0B4AA8] flex items-center justify-center hover:bg-[#0B4AA8] hover:text-white hover:border-[#0B4AA8] hover:shadow-md hover:shadow-blue-900/20 transition-all duration-200"
+              >
+                <Youtube size={17} />
+              </a>
+            </div>
+
+            <div className="rounded-xl bg-white/70 border border-[#DCE7F7] p-4">
+              <p className="text-xs text-gray-500 leading-relaxed">
+                Authentic solar products with manufacturer-backed quality. Serving customers across Pakistan with care and reliability.
+              </p>
+            </div>
+          </div>
         </div>
+      </div>
 
-        {/* Bottom Copyright Text */}
-        <div className="pt-6 border-t border-gray-200/60 text-xs text-gray-600">
-          © 2020–26 <span className="font-bold text-gray-900">Alladin.pk</span> . All Rights Reserved.
+      {/* Bottom Bar */}
+      <div className="border-t border-[#DCE7F7] bg-[#e5e7eb]">
+        <div className="mx-auto max-w-[1600px] px-4 sm:px-6 lg:px-8 py-5">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-3">
+            <p className="text-xs text-gray-500 text-center sm:text-left">
+              © 2020–2026{" "}
+              <span className="font-semibold text-[#1A1A1A]">
+                SS ENERGY Trading Corporation
+              </span>
+              . All rights reserved.
+            </p>
+
+            <div className="flex items-center gap-1.5 text-xs text-gray-400">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span>Powering a sustainable future</span>
+            </div>
+          </div>
         </div>
-
       </div>
     </footer>
   );

@@ -7,9 +7,9 @@ import { sendToWhatsApp } from "../../lib/whatsappUtils";
 
 // Right Side Mini Sub-Categories
 const rightCategories = [
-  { id: 1, key: "hybrid", title: "Hybrid Inverters", image: "/inverter-thumb1.png" },
-  { id: 2, key: "off_grid", title: "Off-Grid Inverters", image: "/inverter-thumb2.png" },
-  { id: 3, key: "on_grid", title: "On-Grid Inverters", image: "/inverter-thumb3.png" },
+  { id: 1, key: "hybrid", title: "Hybrid Inverters", image: "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=400&q=80" },
+  { id: 2, key: "off_grid", title: "Off-Grid Inverters", image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=80" },
+  { id: 3, key: "on_grid", title: "On-Grid Inverters", image: "https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&q=80" },
 ];
 
 // Bottom 3 Promo Banners
@@ -17,21 +17,21 @@ const bottomBanners = [
   {
     id: 1,
     title: "Off Grid Inverters",
-    image: "/banner-offgrid.png",
+    image: "https://images.unsplash.com/photo-1513828583688-c52646db42da?w=500&q=80",
     gradient: "from-[#ff5252] via-[#ff6b6b] to-[#ff7a59]",
     categoryKey: "off_grid",
   },
   {
     id: 2,
     title: "Hybrid Inverters",
-    image: "/banner-hybrid.png",
+    image: "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=500&q=80",
     gradient: "from-[#e11d48] via-[#f43f5e] to-[#fb7185]",
     categoryKey: "hybrid",
   },
   {
     id: 3,
     title: "On Grid Inverters",
-    image: "/banner-ongrid.png",
+    image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&q=80",
     gradient: "from-[#be123c] via-[#e11d48] to-[#f43f5e]",
     categoryKey: "on_grid",
   },
@@ -199,7 +199,7 @@ const extendedProducts = useMemo(() => {
             
             <div className="relative w-full h-48 mt-4">
               <Image
-                src="/promo-inverters.png"
+                src="https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=600&q=80"
                 alt="Solar Inverters Promo"
                 fill
                 unoptimized
@@ -273,7 +273,7 @@ const extendedProducts = useMemo(() => {
                                 )}
 
                                 <Image
-                                  src={product.image || product.imageUrl || "/inverter1.png"}
+                                  src={product.image || product.imageUrl || "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=400&q=80"}
                                   alt={product.title || product.name || "Inverter"}
                                   fill
                                   unoptimized

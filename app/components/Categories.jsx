@@ -12,8 +12,8 @@ const categories = [
   },
   {
     id: 2,
-    name: "Crimping Tools",
-    image: "/crimping.png",
+    name: "Solar Panels",
+    image: "/Solar_Panels-removebg-preview.png",
   },
   {
     id: 3,
@@ -22,24 +22,20 @@ const categories = [
   },
   {
     id: 4,
-    name: "Trimmers & Shavers",
-    image: "/timmers.png",
+    name: "Hybrid Systems",
+    image: "/Hybrid_Systems-removebg-preview.png",
   },
-  {
-    id: 5,
-    name: "Solar Structure",
-    image: "/soloarstructure.png",
-  },
+ 
   {
     id: 6,
-    name: "Multimeters",
-    image: "/meater.png",
+    name: "Solar Batteries",
+    image: "/Solar_Batteries-removebg-preview.png",
   },
   
   {
     id: 7,
-    name: "Cameras & Security",
-    image: "/camera.png",
+    name: "Solar Inverters",
+    image: "/Solar_Inverters-removebg-preview.png",
   },
 ];
 
@@ -47,19 +43,18 @@ export default function CategoriesSection() {
   return (
     <section className="w-full py-6 px-4 lg:px-8 bg-gray-50 overflow-hidden bg-gray-100">
       <div className="mx-auto max-w-[1600px]">
-
-        {/* 1. Top Banner Image */}
-        <div className="w-full mb-8 flex justify-center">
-          <div className="relative w-full max-w-[1100px] h-[80px] sm:h-[110px] md:h-[130px] lg:h-[150px]">
-            <Image
-              src="/Frame_22.webp"
-              alt="Buy With Confidence - Best Prices with 7 Days Return Policy"
-              fill
-              priority
-              className="object-contain"
-            />
-          </div>
-        </div>
+{/* 1. Top Banner Image */}
+<div className="w-full mb-8 flex justify-center">
+  <div className="relative w-full max-w-[1600px] h-[120px] sm:h-[160px] md:h-[200px] lg:h-[240px]">
+    <Image
+      src="/Frame_22.png"
+      alt="Buy With Confidence - Best Prices with 7 Days Return Policy"
+      fill
+      priority
+      className="object-contain"
+    />
+  </div>
+</div>
 
         {/* 2. Shop By Categories Header */}
         <div className="flex items-center justify-between mb-6 px-2">
