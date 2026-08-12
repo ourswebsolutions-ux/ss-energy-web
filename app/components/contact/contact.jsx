@@ -8,7 +8,7 @@ export default function FloatingMailButton() {
   const [isOpen, setIsOpen] = useState(false);
 
   // Apna WhatsApp Number Yahan Likhain (Country code ke sath, bina + ya 0 ke)
-  const phoneNumber = "923001234567"; 
+  const phoneNumber = "923214264560"; 
   const defaultMessage = "Assalamu Alaikum! I would like to inquire about your solar energy products and pricing.";
 
   const toggleWidget = () => setIsOpen((prev) => !prev);

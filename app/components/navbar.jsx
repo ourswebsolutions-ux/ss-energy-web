@@ -32,7 +32,7 @@ export default function Navbar() {
         {/* Main Navbar Row */}
         <div className="mx-auto flex h-[72px] max-w-[1600px] items-center justify-between px-4 sm:px-6 lg:h-[86px] lg:px-8">
           {/* Logo */}
-          <div className="flex shrink-0 items-center select-none">
+          <div className="flex shrink-0 items-center select-none md:-ml-14">
             <Image
               src="/sslogo.png"
               alt="Alladin.pk Logo"
@@ -46,7 +46,7 @@ export default function Navbar() {
           {/* UAN - Desktop only */}
           <div className="ml-8 hidden xl:block">
             <p className="whitespace-nowrap text-[15px] font-semibold tracking-wide text-blue-600 transition-colors duration-300 hover:text-blue-700">
-              UAN : 0335-1111-200
+              Pak : +92 321 4264560
             </p>
           </div>
 
