@@ -81,18 +81,18 @@ export default function SolarPanelsSection() {
     });
   }, [products, activeCategory]);
 
-// Extended array for smooth infinite slider loop
-// صرف تب ڈپلیکیٹ کریں جب پروڈکٹس 3 سے زیادہ ہوں (کیونکہ ایک وقت میں 3 کارڈ دکھتے ہیں)
-const extendedProducts = useMemo(() => {
-  if (filteredProducts.length === 0) return [];
-  
-  // اگر 3 یا اس سے کم پروڈکٹس ہیں تو ڈپلیکیٹ نہ کریں
-  if (filteredProducts.length <= 3) {
-    return filteredProducts;
-  }
-  
-  return [...filteredProducts, ...filteredProducts];
-}, [filteredProducts]);
+  // Extended array for smooth infinite slider loop
+  // Duplicate only when products > 2 (because 2 cards are visible on desktop)
+  const extendedProducts = useMemo(() => {
+    if (filteredProducts.length === 0) return [];
+    
+    // If 2 or fewer products, do not duplicate
+    if (filteredProducts.length <= 2) {
+      return filteredProducts;
+    }
+    
+    return [...filteredProducts, ...filteredProducts];
+  }, [filteredProducts]);
 
   // Auto-Slide Timer (10 Seconds)
   useEffect(() => {
@@ -188,7 +188,7 @@ const extendedProducts = useMemo(() => {
               <p className="uppercase text-xs tracking-wider font-semibold opacity-90 mb-1 text-sky-200">
                 HIGH EFFICIENCY
               </p>
-              <h3 className="text-2xl sm:text-3xl font-black leading-tight tracking-wide text-amber-300 drop-shadow">
+              <h3 className="text-2xl sm:text-3xl font-black leading-tight tracking-wide text-white drop-shadow">
                 SOLAR PANELS
               </h3>
               <p className="text-sm mt-3 opacity-90">Tier-1 Guaranteed Quality</p>
@@ -244,18 +244,25 @@ const extendedProducts = useMemo(() => {
                       isTransitioning ? "transition-transform duration-500 ease-in-out" : ""
                     }`}
                     style={{
-                      transform: `translateX(-${currentIndex * (100 / 3)}%)`,
+                      // 2 cards visible on desktop → move by 50% each step
+                      // On mobile the card is 100% wide so the same 50% step still works
+                      // because we control visible cards via width classes below
+                      transform: `translateX(-${currentIndex * 50}%)`,
                     }}
                   >
                     {extendedProducts.map((product, idx) => {
-                      const orig = parseFloat(product.originalPrice || product.oldPrice) || 0;
-                      const disc = parseFloat(product.discountedPrice || product.price) || 0;
-                      const savings = orig > disc ? orig - disc : null;
+                      // Safe numeric extraction only for savings calculation
+                      const origNum = parseInt(String(product.originalPrice || "").replace(/\D/g, ""), 10) || 0;
+                      const discNum = parseInt(String(product.discountedPrice || "").replace(/\D/g, ""), 10) || 0;
+                      const calculatedSavings = origNum > discNum ? `Save Rs.${(origNum - discNum).toLocaleString()}` : null;
+                      const savingsText = product.savings || calculatedSavings;
 
                       return (
                         <div
                           key={`${product.id || product._id || "prod"}-${idx}`}
-                          className="w-full sm:w-1/2 lg:w-1/3 flex-shrink-0 px-1.5"
+                          // Mobile: 1 card (100%)
+                          // Tablet+: 2 cards (50%)
+                          className="w-full sm:w-1/2 flex-shrink-0 px-1.5"
                         >
                           {/* Card UI */}
                           <div className="bg-white border border-gray-200 rounded-2xl p-3 flex flex-col justify-between h-full shadow-xs hover:shadow-md transition-shadow relative">
@@ -263,15 +270,15 @@ const extendedProducts = useMemo(() => {
                             <div>
                               {/* Image Box */}
                               <div className="relative w-full h-44 bg-[#f8fafc] rounded-xl overflow-hidden mb-3 flex items-center justify-center">
-                                {product.badge && (
+                                {product.badgeText && (
                                   <span className="absolute top-2 left-2 z-10 bg-[#008a51] text-white text-[10px] font-black uppercase px-2.5 py-1 rounded-full tracking-wide">
-                                    {product.badge}
+                                    {product.badgeText}
                                   </span>
                                 )}
 
                                 <Image
-                                  src={product.image || product.imageUrl || "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400&q=80"}
-                                  alt={product.title || product.name || "Product"}
+                                  src={product.image || "https://images.unsplash.com/photo-1509391366360-2e959784a276?w=400&q=80"}
+                                  alt={product.title || "Product"}
                                   fill
                                   unoptimized
                                   className="object-contain p-2 hover:scale-105 transition-transform duration-300"
@@ -279,17 +286,17 @@ const extendedProducts = useMemo(() => {
                               </div>
 
                               {/* Category Tag */}
-                              {(product.categoryPill || product.category || product.tag) && (
+                              {(product.category || product.targetSection) && (
                                 <div className="mb-1.5">
                                   <span className="inline-block bg-[#f1f5f9] text-[#64748b] text-[11px] font-semibold px-2.5 py-0.5 rounded-md">
-                                    {product.categoryPill || product.category || product.tag}
+                                    {product.category || product.targetSection}
                                   </span>
                                 </div>
                               )}
 
                               {/* Title */}
                               <h3 className="text-sm font-bold text-gray-900 line-clamp-1 mb-0.5">
-                                {product.title || product.name || "Product Title"}
+                                {product.title || "Product Title"}
                               </h3>
 
                               {/* Description */}
@@ -299,46 +306,58 @@ const extendedProducts = useMemo(() => {
                                 </p>
                               )}
 
-                              {/* Specs Badge */}
-                              {(product.specifications || product.warranty) && (
-                                <div className="mb-3">
-                                  <span className="inline-flex items-center gap-1 bg-[#fffbeb] border border-[#fde68a] text-[#b45309] text-[11px] font-medium px-2 py-0.5 rounded-md">
-                                    <ShieldCheck size={12} className="text-[#d97706]" />
-                                    <span className="truncate">
-                                      {product.specifications || product.warranty}
+                              {/* Specs + Warranty */}
+                              {(product.specs || product.warranty) && (
+                                <div className="mb-3 flex flex-wrap gap-1.5">
+                                  {product.specs && (
+                                    <span className="inline-flex items-center gap-1 bg-[#fffbeb] border border-[#fde68a] text-[#b45309] text-[11px] font-medium px-2 py-0.5 rounded-md">
+                                      <ShieldCheck size={12} className="text-[#d97706]" />
+                                      <span className="truncate">{product.specs}</span>
                                     </span>
-                                  </span>
+                                  )}
+                                  {product.warranty && (
+                                    <span className="inline-flex items-center gap-1 bg-amber-50 border border-amber-200 text-amber-700 text-[11px] font-medium px-2 py-0.5 rounded-md">
+                                      🛡️ {product.warranty}
+                                    </span>
+                                  )}
                                 </div>
                               )}
                             </div>
 
                             <div>
-                              {/* Price */}
+                              {/* Price – display the original strings from Admin */}
                               <div className="flex items-baseline gap-2 mb-0.5">
-                                {orig > 0 && (
+                                {product.originalPrice && (
                                   <span className="text-xs text-gray-400 line-through font-medium">
-                                    {orig}
+                                    {product.originalPrice}
                                   </span>
                                 )}
                                 <span className="text-base font-extrabold text-gray-900">
-                                  {disc || product.price || "N/A"}
+                                  {product.discountedPrice || "N/A"}
                                 </span>
                               </div>
 
                               {/* Save Amount */}
-                              {savings && (
-                                <p className="text-[11px] font-bold text-[#008a51] mb-3">
-                                  Save Rs.{savings}
+                              {savingsText && (
+                                <p className="text-[11px] font-bold text-[#008a51] mb-2">
+                                  {savingsText}
                                 </p>
                               )}
 
-                              {/* Action Button */}
+                              {/* Stock status */}
+                              {typeof product.inStock === "boolean" && (
+                                <p className={`text-[11px] font-semibold mb-2 ${product.inStock ? "text-emerald-600" : "text-red-600"}`}>
+                                  {product.inStock ? "In Stock" : "Out of Stock"}
+                                </p>
+                              )}
+
+                              {/* Action Button – exact same color as Admin Live Preview for panels */}
                               <button
                                 onClick={() => sendToWhatsApp(product)}
-                                className="w-full bg-[#008a51] hover:bg-[#007443] text-white text-xs font-bold py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+                                className="w-full bg-sky-600 hover:bg-amber-600 text-white text-xs font-bold py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-xs"
                               >
                                 <ShoppingBag size={14} />
-                                <span>{product.buttonText || "Buy Now"}</span>
+                                <span>{product.buttonText || "Add To Cart"}</span>
                               </button>
                             </div>
 

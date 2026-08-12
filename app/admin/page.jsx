@@ -242,9 +242,9 @@ export default function AdminProductsPage() {
       case "panels":
       case "solar":
         return {
-          badge: "bg-amber-500 text-white",
-          border: "border-amber-500",
-          btnBg: "bg-amber-500 hover:bg-amber-600 text-white",
+          badge: "bg-sky-600 text-white",
+          border: "border-bg-sky-600",
+          btnBg: "bg-sky-600 hover:bg-sky-600 text-white",
           lightBg: "bg-amber-50 text-amber-700 border-amber-200",
           icon: <Layers size={16} />,
         };
@@ -322,7 +322,7 @@ export default function AdminProductsPage() {
                 </label>
                 <div className="grid grid-cols-3 gap-2.5">
                   {[
-                    { id: "panels", label: "Panels (Solar)", color: "peer-checked:bg-amber-500 peer-checked:border-amber-500" },
+                    { id: "panels", label: "Panels (Solar)", color: "peer-checked:bg-sky-600 peer-checked:border-sky-600" },
                     { id: "inverters", label: "Inverters", color: "peer-checked:bg-red-600 peer-checked:border-red-600" },
                     { id: "batteries", label: "Batteries", color: "peer-checked:bg-emerald-600 peer-checked:border-emerald-600" },
                   ].map((sec) => (
@@ -610,8 +610,8 @@ export default function AdminProductsPage() {
                   <p className="text-sm text-slate-400">No products found</p>
                 </div>
               ) : (
-                <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs">
+           <div className="overflow-x-auto max-h-[280px] overflow-y-auto">
+  <table className="w-full text-left text-xs">
                     <thead>
                       <tr className="border-b border-slate-100 text-slate-500">
                         <th className="pb-3 font-semibold">Product</th>
