@@ -101,7 +101,7 @@ export default function Footer() {
                     href="tel:03351111200"
                     className="block text-sm text-gray-600 hover:text-[#0B4AA8] transition-colors"
                   >
-                    0335-1111-200
+                    +92 321 4264560
                   </a>
                 </div>
               </div>
