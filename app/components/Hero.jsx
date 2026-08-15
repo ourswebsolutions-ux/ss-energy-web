@@ -80,13 +80,19 @@ export default function HeroSection() {
 
   return (
     <section className="w-full">
+      {/* 
+        Responsive fixed heights for a taller, more premium hero.
+        object-contain + matching dark background ensures the full
+        1920×600 artwork stays visible without horizontal cropping
+        or distortion on every breakpoint.
+      */}
       <div
-        className="relative w-full h-[320px] sm:h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden"
+        className="relative w-full h-[320px] sm:h-[380px] md:h-[450px] lg:h-[500px] xl:h-[550px] 2xl:h-[600px] overflow-hidden bg-[#0a1628]"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {/* Slides - fixed height container, all images fill it with object-cover */}
+        {/* slides */}
         {slides.map((slide, index) => (
           <div
             key={index}
@@ -96,14 +102,16 @@ export default function HeroSection() {
                 : "z-0 opacity-0 pointer-events-none"
             }`}
           >
-            <Image
-              src={slide.image}
-              alt={slide.alt}
-              fill
-              priority={index === 0}
-              className="object-cover"
-              sizes="100vw"
-            />
+            <div className="relative w-full h-full">
+              <Image
+                src={slide.image}
+                alt={slide.alt}
+                fill
+                priority={index === 0}
+                className="object-contain object-center"
+                sizes="100vw"
+              />
+            </div>
           </div>
         ))}
 
