@@ -3,38 +3,36 @@
 import React from "react";
 import Image from "next/image";
 
-// Existing product data + subtle energy accents (kept intact)
 const categories = [
-
   {
     id: 2,
     name: "Solar Panels",
     image: "/Solar Panels.jpg",
-    glow: "shadow-[0_0_40px_-8px_rgba(251,146,60,0.45)]",
+    glow: "shadow-[0_0_40px_-8px_rgba(11,64,132,0.45)]",
   },
   {
     id: 3,
     name: "Lithium Batteries",
     image: "/lithium.png",
-    glow: "shadow-[0_0_40px_-8px_rgba(52,211,153,0.45)]",
+    glow: "shadow-[0_0_40px_-8px_rgba(8,52,103,0.45)]",
   },
   {
     id: 4,
     name: "Hybrid Systems",
     image: "/Hybrid_Systems-removebg-preview.png",
-    glow: "shadow-[0_0_40px_-8px_rgba(34,211,238,0.45)]",
+    glow: "shadow-[0_0_40px_-8px_rgba(11,64,132,0.40)]",
   },
   {
     id: 6,
     name: "Solar Batteries",
     image: "/Solar_Batteries-removebg-preview.png",
-    glow: "shadow-[0_0_40px_-8px_rgba(16,185,129,0.45)]",
+    glow: "shadow-[0_0_40px_-8px_rgba(8,52,103,0.40)]",
   },
   {
     id: 7,
     name: "Solar Inverters",
     image: "/Solar_Inverters-removebg-preview.png",
-    glow: "shadow-[0_0_40px_-8px_rgba(249,115,22,0.45)]",
+    glow: "shadow-[0_0_40px_-8px_rgba(11,64,132,0.45)]",
   },
 ];
 
@@ -43,15 +41,11 @@ export default function CategoriesSection() {
     <section className="relative w-full overflow-hidden py-5 sm:py-6 lg:py-8">
       {/* ========== PREMIUM LIGHT BACKGROUND ========== */}
       <div className="absolute inset-0 -z-30 bg-gradient-to-b from-[#f8fafc] via-white to-[#f1f5f9]" />
-      <div className="pointer-events-none absolute -top-40 left-[15%] h-[480px] w-[480px] -z-20 rounded-full bg-amber-200/25 blur-[130px]" />
-      <div className="pointer-events-none absolute top-1/3 right-[-5%] h-[420px] w-[420px] -z-20 rounded-full bg-cyan-200/20 blur-[120px]" />
-      <div className="pointer-events-none absolute bottom-[-10%] left-[5%] h-[360px] w-[360px] -z-20 rounded-full bg-emerald-200/15 blur-[110px]" />
+      <div className="pointer-events-none absolute -top-40 left-[15%] h-[480px] w-[480px] -z-20 rounded-full bg-[#0B4084]/10 blur-[130px]" />
+      <div className="pointer-events-none absolute top-1/3 right-[-5%] h-[420px] w-[420px] -z-20 rounded-full bg-[#083467]/10 blur-[120px]" />
+      <div className="pointer-events-none absolute bottom-[-10%] left-[5%] h-[360px] w-[360px] -z-20 rounded-full bg-[#0B4084]/8 blur-[110px]" />
 
       <div className="relative mx-auto max-w-[1600px] px-4 lg:px-8">
-       
-
-      
-
         {/* ========== MARQUEE STAGE (compact height) ========== */}
         <div className="relative h-[190px] w-full overflow-hidden sm:h-[210px] lg:h-[240px]">
           {/* Edge fades */}
@@ -63,7 +57,7 @@ export default function CategoriesSection() {
             <div className="ambient-glow absolute left-1/2 top-1/2 h-36 w-[180%] -translate-x-1/2 -translate-y-1/2 opacity-50 blur-3xl" />
           </div>
 
-          {/* ========== RIBBON 1 (orange → golden) – behind products ========== */}
+          {/* ========== RIBBON 1 (brand blue) – behind products ========== */}
           <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden">
             <div className="ribbon-track ribbon-1">
               <svg
@@ -74,17 +68,16 @@ export default function CategoriesSection() {
               >
                 <defs>
                   <linearGradient id="ribbonGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#ff9a1f" stopOpacity="0.55" />
-                    <stop offset="25%" stopColor="#ffb347" stopOpacity="0.7" />
-                    <stop offset="50%" stopColor="#ff8615" stopOpacity="0.65" />
-                    <stop offset="75%" stopColor="#fbbf24" stopOpacity="0.6" />
-                    <stop offset="100%" stopColor="#ff9a1f" stopOpacity="0.5" />
+                    <stop offset="0%" stopColor="#0B4084" stopOpacity="0.55" />
+                    <stop offset="25%" stopColor="#083467" stopOpacity="0.7" />
+                    <stop offset="50%" stopColor="#0B4084" stopOpacity="0.65" />
+                    <stop offset="75%" stopColor="#0a3570" stopOpacity="0.6" />
+                    <stop offset="100%" stopColor="#0B4084" stopOpacity="0.5" />
                   </linearGradient>
                   <filter id="ribbonBlur1" x="-20%" y="-40%" width="140%" height="180%">
                     <feGaussianBlur in="SourceGraphic" stdDeviation="6" />
                   </filter>
                 </defs>
-                {/* Wide flowing ribbon path (sine-like) */}
                 <path
                   d="M0,200 
                      C150,80 300,80 450,200 
@@ -104,7 +97,6 @@ export default function CategoriesSection() {
                   filter="url(#ribbonBlur1)"
                 />
               </svg>
-              {/* Duplicate for seamless loop */}
               <svg
                 className="ribbon-svg"
                 viewBox="0 0 2400 400"
@@ -113,11 +105,11 @@ export default function CategoriesSection() {
               >
                 <defs>
                   <linearGradient id="ribbonGrad1b" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#ff9a1f" stopOpacity="0.55" />
-                    <stop offset="25%" stopColor="#ffb347" stopOpacity="0.7" />
-                    <stop offset="50%" stopColor="#ff8615" stopOpacity="0.65" />
-                    <stop offset="75%" stopColor="#fbbf24" stopOpacity="0.6" />
-                    <stop offset="100%" stopColor="#ff9a1f" stopOpacity="0.5" />
+                    <stop offset="0%" stopColor="#0B4084" stopOpacity="0.55" />
+                    <stop offset="25%" stopColor="#083467" stopOpacity="0.7" />
+                    <stop offset="50%" stopColor="#0B4084" stopOpacity="0.65" />
+                    <stop offset="75%" stopColor="#0a3570" stopOpacity="0.6" />
+                    <stop offset="100%" stopColor="#0B4084" stopOpacity="0.5" />
                   </linearGradient>
                 </defs>
                 <path
@@ -167,7 +159,7 @@ export default function CategoriesSection() {
                   </div>
 
                   {/* Product label */}
-                  <span className="mt-2 text-center text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-700 transition-colors duration-300 group-hover:text-[#ff8615] sm:text-[11px] lg:text-xs">
+                  <span className="mt-2 text-center text-[10px] font-semibold uppercase tracking-[0.1em] text-slate-700 transition-colors duration-300 group-hover:text-[#0B4084] sm:text-[11px] lg:text-xs">
                     {item.name}
                   </span>
                 </div>
@@ -175,7 +167,7 @@ export default function CategoriesSection() {
             </div>
           </div>
 
-          {/* ========== RIBBON 2 (cyan → electric blue → teal) – in front of products ========== */}
+          {/* ========== RIBBON 2 (deeper brand blue) – in front of products ========== */}
           <div className="pointer-events-none absolute inset-0 z-30 overflow-hidden">
             <div className="ribbon-track ribbon-2">
               <svg
@@ -186,11 +178,11 @@ export default function CategoriesSection() {
               >
                 <defs>
                   <linearGradient id="ribbonGrad2" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#22d3ee" stopOpacity="0.45" />
-                    <stop offset="30%" stopColor="#38bdf8" stopOpacity="0.55" />
-                    <stop offset="55%" stopColor="#0ea5e9" stopOpacity="0.5" />
-                    <stop offset="80%" stopColor="#2dd4bf" stopOpacity="0.45" />
-                    <stop offset="100%" stopColor="#22d3ee" stopOpacity="0.4" />
+                    <stop offset="0%" stopColor="#083467" stopOpacity="0.45" />
+                    <stop offset="30%" stopColor="#0B4084" stopOpacity="0.55" />
+                    <stop offset="55%" stopColor="#0a3570" stopOpacity="0.5" />
+                    <stop offset="80%" stopColor="#083467" stopOpacity="0.45" />
+                    <stop offset="100%" stopColor="#0B4084" stopOpacity="0.4" />
                   </linearGradient>
                   <filter id="ribbonBlur2" x="-20%" y="-40%" width="140%" height="180%">
                     <feGaussianBlur in="SourceGraphic" stdDeviation="5" />
@@ -221,11 +213,11 @@ export default function CategoriesSection() {
               >
                 <defs>
                   <linearGradient id="ribbonGrad2b" x1="0%" y1="0%" x2="100%" y2="0%">
-                    <stop offset="0%" stopColor="#22d3ee" stopOpacity="0.45" />
-                    <stop offset="30%" stopColor="#38bdf8" stopOpacity="0.55" />
-                    <stop offset="55%" stopColor="#0ea5e9" stopOpacity="0.5" />
-                    <stop offset="80%" stopColor="#2dd4bf" stopOpacity="0.45" />
-                    <stop offset="100%" stopColor="#22d3ee" stopOpacity="0.4" />
+                    <stop offset="0%" stopColor="#083467" stopOpacity="0.45" />
+                    <stop offset="30%" stopColor="#0B4084" stopOpacity="0.55" />
+                    <stop offset="55%" stopColor="#0a3570" stopOpacity="0.5" />
+                    <stop offset="80%" stopColor="#083467" stopOpacity="0.45" />
+                    <stop offset="100%" stopColor="#0B4084" stopOpacity="0.4" />
                   </linearGradient>
                 </defs>
                 <path
@@ -350,9 +342,9 @@ export default function CategoriesSection() {
           background: linear-gradient(
             90deg,
             transparent 0%,
-            rgba(255, 160, 50, 0.35) 20%,
-            rgba(56, 189, 248, 0.3) 50%,
-            rgba(52, 211, 153, 0.25) 75%,
+            rgba(11, 64, 132, 0.35) 20%,
+            rgba(8, 52, 103, 0.3) 50%,
+            rgba(11, 64, 132, 0.25) 75%,
             transparent 100%
           );
           animation: ambient-pulse 12s ease-in-out infinite;

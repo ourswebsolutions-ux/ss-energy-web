@@ -56,12 +56,12 @@ export default function Navbar() {
               <input
                 type="text"
                 placeholder="Search the store"
-                className="h-12 w-full rounded-full border border-gray-300 bg-white pl-5 pr-14 text-[15px] text-gray-800 shadow-sm outline-none transition-all duration-300 placeholder:text-gray-400 focus:border-blue-500 focus:shadow-md focus:ring-2 focus:ring-blue-400/40"
+                className="h-12 w-full rounded-full border border-gray-300 bg-white pl-5 pr-14 text-[15px] text-gray-800 shadow-sm outline-none transition-all duration-300 placeholder:text-gray-400 focus:border-[#0B4084] focus:shadow-md focus:ring-2 focus:ring-[#0B4084]/40"
               />
               <button
                 type="button"
                 aria-label="Search"
-                className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-blue-600 transition-colors duration-300 hover:bg-blue-50 hover:text-blue-700"
+                className="absolute right-4 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-[#0B4084] transition-colors duration-300 hover:bg-[#0B4084]/10 hover:text-[#083467]"
               >
                 <Search size={22} strokeWidth={2.25} />
               </button>
@@ -73,7 +73,7 @@ export default function Navbar() {
             {/* Sign In - Desktop */}
             <button
               type="button"
-              className="hidden flex-col items-center text-blue-600 transition-all duration-300 hover:text-blue-700 md:flex"
+              className="hidden flex-col items-center text-[#0B4084] transition-all duration-300 hover:text-[#083467] md:flex"
             >
               <User size={26} strokeWidth={2} />
               <span className="mt-1 text-[13px] font-medium tracking-wide">
@@ -84,10 +84,10 @@ export default function Navbar() {
             {/* Cart - Desktop */}
             <button
               type="button"
-              className="relative hidden flex-col items-center text-blue-600 transition-all duration-300 hover:text-blue-700 md:flex"
+              className="relative hidden flex-col items-center text-[#0B4084] transition-all duration-300 hover:text-[#083467] md:flex"
             >
               <ShoppingCart size={26} strokeWidth={2} />
-              <span className="absolute -right-2 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-[11px] font-bold text-white shadow-sm">
+              <span className="absolute -right-2 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#0B4084] text-[11px] font-bold text-white shadow-sm">
                 0
               </span>
               <span className="mt-1 text-[13px] font-medium tracking-wide">
@@ -101,7 +101,7 @@ export default function Navbar() {
               onClick={toggleMobileMenu}
               aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
               aria-expanded={isMobileMenuOpen}
-              className="flex items-center justify-center rounded-lg p-2 text-blue-600 transition-all duration-300 hover:bg-blue-100/60 active:scale-95 lg:hidden"
+              className="flex items-center justify-center rounded-lg p-2 text-[#0B4084] transition-all duration-300 hover:bg-[#0B4084]/10 active:scale-95 lg:hidden"
             >
               {isMobileMenuOpen ? (
                 <X size={28} strokeWidth={2.25} />
@@ -125,12 +125,12 @@ export default function Navbar() {
               <input
                 type="text"
                 placeholder="Search the store"
-                className="h-12 w-full rounded-full border border-gray-300 bg-white pl-5 pr-12 text-[15px] text-gray-800 shadow-sm outline-none transition-all duration-300 placeholder:text-gray-400 focus:border-blue-500 focus:ring-2 focus:ring-blue-400/40"
+                className="h-12 w-full rounded-full border border-gray-300 bg-white pl-5 pr-12 text-[15px] text-gray-800 shadow-sm outline-none transition-all duration-300 placeholder:text-gray-400 focus:border-[#0B4084] focus:ring-2 focus:ring-[#0B4084]/40"
               />
               <button
                 type="button"
                 aria-label="Search"
-                className="absolute right-3.5 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-blue-600 transition-colors duration-300 hover:bg-blue-50 hover:text-blue-700"
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 rounded-full p-1.5 text-[#0B4084] transition-colors duration-300 hover:bg-[#0B4084]/10 hover:text-[#083467]"
               >
                 <Search size={22} strokeWidth={2.25} />
               </button>
@@ -140,9 +140,9 @@ export default function Navbar() {
             <div className="flex flex-col gap-1">
               <button
                 type="button"
-                className="flex items-center gap-3 rounded-xl px-3 py-3.5 text-left text-blue-600 transition-all duration-300 hover:bg-blue-100/50 active:bg-blue-100/70"
+                className="flex items-center gap-3 rounded-xl px-3 py-3.5 text-left text-[#0B4084] transition-all duration-300 hover:bg-[#0B4084]/10 active:bg-[#0B4084]/15"
               >
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-100/70">
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-[#0B4084]/10">
                   <User size={22} strokeWidth={2} />
                 </div>
                 <span className="text-[15px] font-medium">Sign In</span>
@@ -150,11 +150,11 @@ export default function Navbar() {
 
               <button
                 type="button"
-                className="relative flex items-center gap-3 rounded-xl px-3 py-3.5 text-left text-blue-600 transition-all duration-300 hover:bg-blue-100/50 active:bg-blue-100/70"
+                className="relative flex items-center gap-3 rounded-xl px-3 py-3.5 text-left text-[#0B4084] transition-all duration-300 hover:bg-[#0B4084]/10 active:bg-[#0B4084]/15"
               >
-                <div className="relative flex h-10 w-10 items-center justify-center rounded-full bg-blue-100/70">
+                <div className="relative flex h-10 w-10 items-center justify-center rounded-full bg-[#0B4084]/10">
                   <ShoppingCart size={22} strokeWidth={2} />
-                  <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-blue-600 text-[11px] font-bold text-white shadow-sm">
+                  <span className="absolute -right-1 -top-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#0B4084] text-[11px] font-bold text-white shadow-sm">
                     0
                   </span>
                 </div>
