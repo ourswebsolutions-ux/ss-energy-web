@@ -1,71 +1,207 @@
-import React from "react";
+"use client";
+
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import Image from "next/image";
 
+const slides = [
+  {
+    image: "/hero1.jpg",
+    alt: "Solar Energy Solutions",
+  },
+  {
+    image: "/hero2.jpg",
+    alt: "AC/DC Breakers",
+  },
+  {
+    image: "/hero3.jpg",
+    alt: "Lithium Batteries",
+  },
+];
+
 export default function HeroSection() {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const touchStartX = useRef(null);
+  const touchEndX = useRef(null);
+
+  const nextSlide = useCallback(() => {
+    setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+  }, []);
+
+  const prevSlide = useCallback(() => {
+    setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+  }, []);
+
+  const goToSlide = useCallback((index) => {
+    setCurrentSlide(index);
+  }, []);
+
+  const togglePlay = useCallback(() => {
+    setIsPlaying((prev) => !prev);
+  }, []);
+
+  // Autoplay with proper cleanup
+  useEffect(() => {
+    if (!isPlaying) return;
+
+    const interval = setInterval(() => {
+      nextSlide();
+    }, 5000);
+
+    return () => clearInterval(interval);
+  }, [isPlaying, nextSlide, currentSlide]);
+
+  // Touch / swipe support
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchMove = (e) => {
+    touchEndX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = () => {
+    if (touchStartX.current === null || touchEndX.current === null) return;
+
+    const diff = touchStartX.current - touchEndX.current;
+    const minSwipeDistance = 50;
+
+    if (Math.abs(diff) > minSwipeDistance) {
+      if (diff > 0) {
+        nextSlide();
+      } else {
+        prevSlide();
+      }
+    }
+
+    touchStartX.current = null;
+    touchEndX.current = null;
+  };
+
   return (
-    <section className="w-full bg-gray-50 py-4 px-4 lg:px-8">
-      <div className="mx-auto max-w-[1600px]">
-        {/* Grid Layout: Left Big Banner + Right 4 Banners */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-3 lg:gap-4 items-stretch">
-          
-          {/* Left Side Big Banner (Takes 7 cols on large screens) */}
-          <div className="lg:col-span-7 flex">
-            <div className="relative w-full h-full min-h-[220px] sm:min-h-[420px] overflow-hidden rounded-xl shadow-sm hover:shadow-md transition-shadow aspect-[16/9] lg:aspect-auto">
-              <Image
-                src="/solar.png"
-                alt="Main Banner - Primax Solar Inverters"
-                fill
-                priority
-                className="object-contain lg:object-cover rounded-xl"
+    <section className="w-full">
+      <div
+        className="relative w-full h-[320px] sm:h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden"
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+      >
+        {/* Slides - fixed height container, all images fill it with object-cover */}
+        {slides.map((slide, index) => (
+          <div
+            key={index}
+            className={`absolute inset-0 w-full h-full transition-opacity duration-500 ease-in-out ${
+              index === currentSlide
+                ? "z-10 opacity-100"
+                : "z-0 opacity-0 pointer-events-none"
+            }`}
+          >
+            <Image
+              src={slide.image}
+              alt={slide.alt}
+              fill
+              priority={index === 0}
+              className="object-cover"
+              sizes="100vw"
+            />
+          </div>
+        ))}
+
+        {/* Controls - bottom center of the visible banner */}
+        <div className="absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1.5 sm:bottom-5 sm:gap-3">
+          {/* Previous */}
+          <button
+            onClick={prevSlide}
+            aria-label="Previous slide"
+            className="flex h-7 w-7 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-md transition hover:bg-white/40 sm:h-9 sm:w-9"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="sm:h-[18px] sm:w-[18px]"
+            >
+              <path d="m15 18-6-6 6-6" />
+            </svg>
+          </button>
+
+          {/* Dots */}
+          <div className="flex items-center gap-1.5 px-1">
+            {slides.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => goToSlide(index)}
+                aria-label={`Go to slide ${index + 1}`}
+                className={`h-1.5 w-1.5 rounded-full transition-all duration-300 sm:h-2.5 sm:w-2.5 ${
+                  index === currentSlide
+                    ? "scale-125 bg-white"
+                    : "bg-white/50 hover:bg-white/80"
+                }`}
               />
-            </div>
+            ))}
           </div>
 
-          {/* Right Side Grid - 4 Small Banners (Takes 5 cols on large screens) */}
-          <div className="lg:col-span-5 grid grid-cols-2 gap-3 lg:gap-4">
-            
-            {/* Top Left - AC/DC Breakers */}
-            <div className="relative overflow-hidden rounded-xl shadow-sm hover:shadow-md transition-shadow aspect-square">
-              <Image
-                src="/breakers.png"
-                alt="AC/DC Breakers"
-                fill
-                className="object-cover rounded-xl"
-              />
-            </div>
+          {/* Next */}
+          <button
+            onClick={nextSlide}
+            aria-label="Next slide"
+            className="flex h-7 w-7 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-md transition hover:bg-white/40 sm:h-9 sm:w-9"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2.5"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              className="sm:h-[18px] sm:w-[18px]"
+            >
+              <path d="m9 18 6-6-6-6" />
+            </svg>
+          </button>
 
-            {/* Top Right - Lithium Batteries */}
-            <div className="relative overflow-hidden rounded-xl shadow-sm hover:shadow-md transition-shadow aspect-square">
-              <Image
-                src="/batteries.png"
-                alt="Lithium Batteries"
-                fill
-                className="object-cover rounded-xl"
-              />
-            </div>
-
-            {/* Bottom Left - Smart Home Solutions */}
-            <div className="relative overflow-hidden rounded-xl shadow-sm hover:shadow-md transition-shadow aspect-square">
-              <Image
-                src="/smart.png"
-                alt="Smart Home Solutions"
-                fill
-                className="object-cover rounded-xl"
-              />
-            </div>
-
-            {/* Bottom Right - Inverex */}
-            <div className="relative overflow-hidden rounded-xl shadow-sm hover:shadow-md transition-shadow aspect-square">
-              <Image
-                src="/inverex.png"
-                alt="Inverex Solar Inverters"
-                fill
-                className="object-cover rounded-xl"
-              />
-            </div>
-
-          </div>
-
+          {/* Pause / Play */}
+          <button
+            onClick={togglePlay}
+            aria-label={isPlaying ? "Pause slideshow" : "Play slideshow"}
+            className="ml-0.5 flex h-7 w-7 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-md transition hover:bg-white/40 sm:ml-1 sm:h-9 sm:w-9"
+          >
+            {isPlaying ? (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                stroke="none"
+                className="sm:h-4 sm:w-4"
+              >
+                <rect x="6" y="4" width="4" height="16" rx="1" />
+                <rect x="14" y="4" width="4" height="16" rx="1" />
+              </svg>
+            ) : (
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="14"
+                height="10"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                stroke="none"
+                className="sm:h-4 sm:w-4"
+              >
+                <path d="M8 5v14l11-7z" />
+              </svg>
+            )}
+          </button>
         </div>
       </div>
     </section>
