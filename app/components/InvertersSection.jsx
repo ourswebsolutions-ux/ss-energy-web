@@ -16,21 +16,21 @@ const bottomBanners = [
     id: 1,
     title: "Off Grid Inverters",
     image: "https://images.unsplash.com/photo-1513828583688-c52646db42da?w=500&q=80",
-    gradient: "from-[#ff5252] via-[#ff6b6b] to-[#ff7a59]",
+    gradient: "from-[#0B4084] via-[#083467] to-[#062a52]",
     categoryKey: "off_grid",
   },
   {
     id: 2,
     title: "Hybrid Inverters",
     image: "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=500&q=80",
-    gradient: "from-[#e11d48] via-[#f43f5e] to-[#fb7185]",
+    gradient: "from-[#083467] via-[#062a52] to-[#041f3d]",
     categoryKey: "hybrid",
   },
   {
     id: 3,
     title: "On Grid Inverters",
     image: "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=500&q=80",
-    gradient: "from-[#be123c] via-[#e11d48] to-[#f43f5e]",
+    gradient: "from-[#0B4084] via-[#083467] to-[#062a52]",
     categoryKey: "on_grid",
   },
 ];
@@ -146,7 +146,7 @@ export default function InvertersSection() {
 
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2.5 sm:gap-3 mb-4 sm:mb-5">
           <div className="min-w-0">
-            <p className="text-[10px] sm:text-[11px] font-semibold tracking-widest uppercase text-red-600 mb-1">
+            <p className="text-[10px] sm:text-[11px] font-semibold tracking-widest uppercase text-[#0B4084] mb-1">
               Our Products
             </p>
             <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
@@ -154,7 +154,7 @@ export default function InvertersSection() {
                 Inverters
               </h2>
               {activeCategory !== "all" && (
-                <span className="text-[10px] sm:text-xs bg-red-100 text-red-800 font-semibold px-2 sm:px-2.5 py-0.5 rounded-full capitalize">
+                <span className="text-[10px] sm:text-xs bg-[#0B4084]/10 text-[#0B4084] font-semibold px-2 sm:px-2.5 py-0.5 rounded-full capitalize">
                   {activeCategory.replace("_", " ")}
                 </span>
               )}
@@ -167,7 +167,7 @@ export default function InvertersSection() {
           {activeCategory !== "all" && (
             <button
               onClick={() => handleSelectCategory("all")}
-              className="text-xs font-semibold text-red-600 hover:underline cursor-pointer flex items-center gap-1 self-start sm:self-auto shrink-0"
+              className="text-xs font-semibold text-[#0B4084] hover:underline cursor-pointer flex items-center gap-1 self-start sm:self-auto shrink-0"
             >
               <Layers size={14} /> Show All Inverters
             </button>
@@ -229,7 +229,7 @@ export default function InvertersSection() {
                             
                             <div className="relative w-full h-52 sm:h-60 md:h-64 lg:h-72 bg-[#f8fafc] overflow-hidden flex items-center justify-center shrink-0">
                               {product.badgeText && (
-                                <span className="absolute top-2 left-2 z-10 bg-red-600 text-white text-[9px] sm:text-[10px] font-black uppercase px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full tracking-wide">
+                                <span className="absolute top-2 left-2 z-10 bg-[#0B4084] text-white text-[9px] sm:text-[10px] font-black uppercase px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full tracking-wide">
                                   {product.badgeText}
                                 </span>
                               )}
@@ -288,18 +288,18 @@ export default function InvertersSection() {
                                   </span>
                                 </div>
                                 {savingsText && (
-                                  <p className="text-[10px] sm:text-[11px] font-bold text-red-600 mb-1.5">
+                                  <p className="text-[10px] sm:text-[11px] font-bold text-[#0B4084] mb-1.5">
                                     {savingsText}
                                   </p>
                                 )}
                                 {typeof product.inStock === "boolean" && (
-                                  <p className={`text-[10px] sm:text-[11px] font-semibold mb-2 ${product.inStock ? "text-emerald-600" : "text-red-600"}`}>
+                                  <p className={`text-[10px] sm:text-[11px] font-semibold mb-2 ${product.inStock ? "text-[#0B4084]" : "text-red-600"}`}>
                                     {product.inStock ? "In Stock" : "Out of Stock"}
                                   </p>
                                 )}
                                 <button
                                   onClick={() => sendToWhatsApp(product)}
-                                  className="w-full bg-red-600 hover:bg-red-700 text-white text-[11px] sm:text-xs font-bold py-2 sm:py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+                                  className="w-full bg-[#0B4084] hover:bg-[#083467] text-white text-[11px] sm:text-xs font-bold py-2 sm:py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-xs"
                                 >
                                   <ShoppingBag size={13} className="sm:w-3.5 sm:h-3.5" />
                                   <span>{product.buttonText || "Add To Cart"}</span>

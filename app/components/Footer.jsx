@@ -2,6 +2,7 @@
 
 import React from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   MapPin,
   Phone,
@@ -35,19 +36,17 @@ export default function Footer() {
           
           {/* Brand + Description */}
           <div className="lg:col-span-5">
-            <div className="flex items-center gap-3 mb-5">
-              <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#0B4AA8] to-[#0A2E73] flex items-center justify-center shadow-md shadow-blue-900/20">
-                <span className="text-white font-bold text-lg tracking-tight">SS</span>
-              </div>
-              <div>
-                <h2 className="text-lg font-bold text-[#0B4AA8] tracking-tight leading-none">
-                  SS ENERGY
-                </h2>
-                <p className="text-[11px] font-medium text-gray-500 tracking-wider uppercase mt-0.5">
-                  Trading Corporation
-                </p>
-              </div>
-            </div>
+            {/* Logo */}
+                     <div className="flex shrink-0 items-center select-none ">
+                       <Image
+                         src="/sslogo.png"
+                         alt="Alladin.pk Logo"
+                         width={180}
+                         height={60}
+                         priority
+                         className="h-16 w-auto sm:h-24 lg:h-[150px]"
+                       />
+                     </div>
 
             <p className="text-sm text-gray-600 leading-relaxed max-w-md mb-6">
               Premium solar energy solutions for homes and businesses across Pakistan. 

@@ -10,9 +10,15 @@ export default function Home() {
     <main>
       <Hero />
       <Categories />
-      <SolarPanelsSection />
-      <InvertersSection />
-      <BatteriesSection />
+      <div id="solar">
+        <SolarPanelsSection />
+      </div>
+      <div id="inverters">
+        <InvertersSection />
+      </div>
+      <div id="batteries">
+        <BatteriesSection />
+      </div>
       <WhyShopWithUs />
     </main>
   );

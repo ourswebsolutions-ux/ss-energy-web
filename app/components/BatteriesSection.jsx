@@ -12,9 +12,9 @@ const rightCategories = [
 ];
 
 const bottomBanners = [
-  { id: 1, title: "Lithium PowerWall", image: "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=500&q=80", gradient: "from-[#059669] via-[#10b981] to-[#34d399]", categoryKey: "lithium" },
-  { id: 2, title: "Tall Tubular Series", image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=500&q=80", gradient: "from-[#047857] via-[#059669] to-[#10b981]", categoryKey: "tubular" },
-  { id: 3, title: "Deep Cycle Solar", image: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=500&q=80", gradient: "from-[#065f46] via-[#047857] to-[#059669]", categoryKey: "dry_gel" },
+  { id: 1, title: "Lithium PowerWall", image: "https://images.unsplash.com/photo-1621905252507-b35492cc74b4?w=500&q=80", gradient: "from-[#0B4084] via-[#0B4084] to-[#083467]", categoryKey: "lithium" },
+  { id: 2, title: "Tall Tubular Series", image: "https://images.unsplash.com/photo-1621905251189-08b45d6a269e?w=500&q=80", gradient: "from-[#083467] via-[#0B4084] to-[#0B4084]", categoryKey: "tubular" },
+  { id: 3, title: "Deep Cycle Solar", image: "https://images.unsplash.com/photo-1593941707882-a5bba14938c7?w=500&q=80", gradient: "from-[#083467] via-[#0B4084] to-[#0B4084]", categoryKey: "dry_gel" },
 ];
 
 export default function BatteriesSection() {
@@ -128,7 +128,7 @@ export default function BatteriesSection() {
 
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-2.5 sm:gap-3 mb-4 sm:mb-5">
           <div className="min-w-0">
-            <p className="text-[10px] sm:text-[11px] font-semibold tracking-widest uppercase text-emerald-600 mb-1">
+            <p className="text-[10px] sm:text-[11px] font-semibold tracking-widest uppercase text-[#0B4084] mb-1">
               Our Products
             </p>
             <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
@@ -136,7 +136,7 @@ export default function BatteriesSection() {
                 Batteries
               </h2>
               {activeCategory !== "all" && (
-                <span className="text-[10px] sm:text-xs bg-emerald-100 text-emerald-800 font-semibold px-2 sm:px-2.5 py-0.5 rounded-full capitalize">
+                <span className="text-[10px] sm:text-xs bg-[#0B4084]/10 text-[#0B4084] font-semibold px-2 sm:px-2.5 py-0.5 rounded-full capitalize">
                   {activeCategory.replace("_", " ")}
                 </span>
               )}
@@ -149,7 +149,7 @@ export default function BatteriesSection() {
           {activeCategory !== "all" && (
             <button
               onClick={() => handleSelectCategory("all")}
-              className="text-xs font-semibold text-emerald-600 hover:underline cursor-pointer flex items-center gap-1 self-start sm:self-auto shrink-0"
+              className="text-xs font-semibold text-[#0B4084] hover:underline cursor-pointer flex items-center gap-1 self-start sm:self-auto shrink-0"
             >
               <Layers size={14} /> Show All Batteries
             </button>
@@ -209,9 +209,9 @@ export default function BatteriesSection() {
                         >
                           <div className="bg-white border border-gray-200 rounded-2xl overflow-hidden flex flex-col h-full shadow-xs hover:shadow-md transition-shadow relative group">
                             
-                            <div className="relative w-full h-52 sm:h-60 md:h-64 lg:h-72 bg-emerald-50/40 overflow-hidden flex items-center justify-center shrink-0">
+                            <div className="relative w-full h-52 sm:h-60 md:h-64 lg:h-72 bg-[#0B4084]/10 overflow-hidden flex items-center justify-center shrink-0">
                               {product.badgeText && (
-                                <span className="absolute top-2 left-2 z-10 bg-emerald-600 text-white text-[9px] sm:text-[10px] font-black uppercase px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full tracking-wide">
+                                <span className="absolute top-2 left-2 z-10 bg-[#0B4084] text-white text-[9px] sm:text-[10px] font-black uppercase px-2 sm:px-2.5 py-0.5 sm:py-1 rounded-full tracking-wide">
                                   {product.badgeText}
                                 </span>
                               )}
@@ -244,13 +244,13 @@ export default function BatteriesSection() {
                                 {(product.specs || product.warranty) && (
                                   <div className="mb-2 flex flex-col gap-1">
                                     {product.specs && (
-                                      <span className="inline-flex items-center gap-1 bg-[#ecfdf5] border border-[#a7f3d0] text-[#047857] text-[10px] sm:text-[11px] font-medium px-1.5 sm:px-2 py-0.5 rounded-md w-fit max-w-full">
+                                      <span className="inline-flex items-center gap-1 bg-[#fffbeb] border border-[#fde68a] text-[#b45309] text-[10px] sm:text-[11px] font-medium px-1.5 sm:px-2 py-0.5 rounded-md w-fit max-w-full">
                                         <ShieldCheck size={11} className="text-[#059669] shrink-0" />
                                         <span className="truncate">{product.specs}</span>
                                       </span>
                                     )}
                                     {product.warranty && (
-                                      <span className="inline-flex items-center gap-1 bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] sm:text-[11px] font-medium px-1.5 sm:px-2 py-0.5 rounded-md w-fit max-w-full">
+                                      <span className="inline-flex items-center gap-1 bg-red-50 border border-red-200 text-red-700 text-[10px] sm:text-[11px] font-medium px-1.5 sm:px-2 py-0.5 rounded-md w-fit max-w-full">
                                         🛡️ {product.warranty}
                                       </span>
                                     )}
@@ -270,18 +270,18 @@ export default function BatteriesSection() {
                                   </span>
                                 </div>
                                 {savingsText && (
-                                  <p className="text-[10px] sm:text-[11px] font-bold text-emerald-600 mb-1.5">
+                                  <p className="text-[10px] sm:text-[11px] font-bold text-[#0B4084] mb-1.5">
                                     {savingsText}
                                   </p>
                                 )}
                                 {typeof product.inStock === "boolean" && (
-                                  <p className={`text-[10px] sm:text-[11px] font-semibold mb-2 ${product.inStock ? "text-emerald-600" : "text-red-600"}`}>
+                                  <p className={`text-[10px] sm:text-[11px] font-semibold mb-2 ${product.inStock ? "text-[#0B4084]" : "text-[#0B4084]"}`}>
                                     {product.inStock ? "In Stock" : "Out of Stock"}
                                   </p>
                                 )}
                                 <button
                                   onClick={() => sendToWhatsApp(product)}
-                                  className="w-full bg-emerald-600 hover:bg-emerald-700 text-white text-[11px] sm:text-xs font-bold py-2 sm:py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-xs"
+                                  className="w-full bg-[#0B4084] hover:bg-[#083467] text-white text-[11px] sm:text-xs font-bold py-2 sm:py-2.5 px-3 rounded-xl flex items-center justify-center gap-1.5 transition-colors cursor-pointer shadow-xs"
                                 >
                                   <ShoppingBag size={13} className="sm:w-3.5 sm:h-3.5" />
                                   <span>{product.buttonText || "Add To Cart"}</span>
