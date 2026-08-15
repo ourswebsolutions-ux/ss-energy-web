@@ -9,7 +9,7 @@ const categories = [
   {
     id: 2,
     name: "Solar Panels",
-    image: "/Solar_Panels-removebg-preview.png",
+    image: "/Solar Panels.jpg",
     glow: "shadow-[0_0_40px_-8px_rgba(251,146,60,0.45)]",
   },
   {

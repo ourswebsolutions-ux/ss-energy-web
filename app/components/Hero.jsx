@@ -21,15 +21,20 @@ const slides = [
 export default function HeroSection() {
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
+
   const touchStartX = useRef(null);
   const touchEndX = useRef(null);
 
   const nextSlide = useCallback(() => {
-    setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+    setCurrentSlide((prev) =>
+      prev === slides.length - 1 ? 0 : prev + 1
+    );
   }, []);
 
   const prevSlide = useCallback(() => {
-    setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+    setCurrentSlide((prev) =>
+      prev === 0 ? slides.length - 1 : prev - 1
+    );
   }, []);
 
   const goToSlide = useCallback((index) => {
@@ -61,9 +66,16 @@ export default function HeroSection() {
   };
 
   const handleTouchEnd = () => {
-    if (touchStartX.current === null || touchEndX.current === null) return;
+    if (
+      touchStartX.current === null ||
+      touchEndX.current === null
+    ) {
+      return;
+    }
 
-    const diff = touchStartX.current - touchEndX.current;
+    const diff =
+      touchStartX.current - touchEndX.current;
+
     const minSwipeDistance = 50;
 
     if (Math.abs(diff) > minSwipeDistance) {
@@ -79,41 +91,20 @@ export default function HeroSection() {
   };
 
   return (
-    <section className="w-full">
-      {/* 
-        Responsive fixed heights for a taller, more premium hero.
-        object-contain + matching dark background ensures the full
-        1920×600 artwork stays visible without horizontal cropping
-        or distortion on every breakpoint.
-      */}
+  <section
+  className="w-full  bg-center bg-no-repeat"
+  style={{
+    backgroundImage: `url(${slides[currentSlide].image})`,
+    backgroundSize: "100% 100%",
+  }}
+>
       <div
-        className="relative w-full h-[320px] sm:h-[380px] md:h-[450px] lg:h-[500px] xl:h-[550px] 2xl:h-[600px] overflow-hidden bg-[#0a1628]"
+        className="relative w-full h-[320px] sm:h-[380px] md:h-[450px] lg:h-[500px] xl:h-[550px] 2xl:h-[600px] overflow-hidden bg-transparent"
         onTouchStart={handleTouchStart}
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {/* slides */}
-        {slides.map((slide, index) => (
-          <div
-            key={index}
-            className={`absolute inset-0 w-full h-full transition-opacity duration-500 ease-in-out ${
-              index === currentSlide
-                ? "z-10 opacity-100"
-                : "z-0 opacity-0 pointer-events-none"
-            }`}
-          >
-            <div className="relative w-full h-full">
-              <Image
-                src={slide.image}
-                alt={slide.alt}
-                fill
-                priority={index === 0}
-                className="object-contain object-center"
-                sizes="100vw"
-              />
-            </div>
-          </div>
-        ))}
+        
 
         {/* Controls - bottom center of the visible banner */}
         <div className="absolute bottom-3 left-1/2 z-20 flex -translate-x-1/2 items-center gap-1.5 sm:bottom-5 sm:gap-3">
@@ -180,7 +171,11 @@ export default function HeroSection() {
           {/* Pause / Play */}
           <button
             onClick={togglePlay}
-            aria-label={isPlaying ? "Pause slideshow" : "Play slideshow"}
+            aria-label={
+              isPlaying
+                ? "Pause slideshow"
+                : "Play slideshow"
+            }
             className="ml-0.5 flex h-7 w-7 items-center justify-center rounded-full bg-white/20 text-white backdrop-blur-md transition hover:bg-white/40 sm:ml-1 sm:h-9 sm:w-9"
           >
             {isPlaying ? (
@@ -200,7 +195,7 @@ export default function HeroSection() {
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 width="14"
-                height="10"
+                height="14"
                 viewBox="0 0 24 24"
                 fill="currentColor"
                 stroke="none"
